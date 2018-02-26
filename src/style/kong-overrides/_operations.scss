@@ -127,6 +127,9 @@
         }
         .content-type-wrapper {
           margin-left: auto;
+          .content-type {
+            color: #000;
+          }
           select {
             margin-bottom: 0; 
           }

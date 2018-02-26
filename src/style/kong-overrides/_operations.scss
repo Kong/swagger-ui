@@ -129,6 +129,9 @@
           margin-left: auto;
           .content-type {
             color: #000;
+            option:checked { 
+              color: #fff;
+            }
           }
           select {
             margin-bottom: 0; 

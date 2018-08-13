@@ -97,17 +97,18 @@ export default class Responses extends React.Component {
             </div>
 
         }
-        {isSpecOAS3 ? null :
+        
           <div className="opblock-section-header light">
+          {isSpecOAS3 ? null :
             <h4>Example Request</h4>
+          }
           </div>
-        }
         {isSpecOAS3 ? null :
           <CodeSnippetWidget har={har} snippets={snippets} />
         }
         <div className="opblock-section-header light">
           <h4>Responses</h4>
-          {specSelectors.isOAS3() ? null :
+          {isSpecOAS3 ? null :
             <ContentType value={producesValue}
               onChange={this.onChangeProducesWrapper}
               contentTypes={produces}

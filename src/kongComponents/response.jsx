@@ -68,6 +68,7 @@ export default class Response extends React.Component {
       code,
       response,
       className,
+      specPath,
       fn,
       getComponent,
       getConfigs,
@@ -86,8 +87,6 @@ export default class Response extends React.Component {
     const HighlightCode = getComponent("highlightCode")
     // const ModelExample = getComponent("modelExample")
     const Markdown = getComponent("Markdown")
-    const OperationLink = getComponent("operationLink")
-    const ContentType = getComponent("contentType")
 
     var sampleResponse
     var sampleSchema
@@ -111,7 +110,7 @@ export default class Response extends React.Component {
       specPathWithPossibleSchema = oas3SchemaForContentType ? List(["content", this.state.responseContentType, "schema"]) : specPath
     } else {
       schema = inferSchema(response.toJS()) // TODO: don't convert back and forth. Lets just stick with immutable for inferSchema
-      specPathWithPossibleSchema = response.has("schema") ? specPath.push("schema") : specPath
+     // specPathWithPossibleSchema = response.has("schema") ? specPath.push("schema") : specPath
       sampleResponse = schema ? getSampleSchema(schema, activeContentType, {
         includeReadOnly: true,
         includeWriteOnly: true // writeOnly has no filtering effect in swagger 2.0

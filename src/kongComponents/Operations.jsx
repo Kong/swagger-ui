@@ -38,17 +38,15 @@ export default class Operations extends React.Component {
 
     try {
       parsedSpec = YAML.load(specStr)
-    } catch (error) {
+    } catch (yamlError) {
       try {
         parsedSpec = JSON.parse(specStr)
       } catch (jsonError) {
         parsedSpec = null
-        hars = null
-        harsKeyed = null
       }
     }
 
-    if (!parsedSpec.openapi) {
+    if(parsedSpec) {
       try {
         hars = swagger2har(parsedSpec)
       } catch (error) {
@@ -146,20 +144,6 @@ export default class Operations extends React.Component {
                     />
                   }).toArray()
                 }
-                {harsKeyed ? null :
-                  operations.map(op => {
-                    const path = op.get("path")
-                    const method = op.get("method")
-                    const key = `${path}-${method}`
-                     return <KongOperationsContainer
-                      key={key}
-                      op={op}
-                      path={path}
-                      method={method}
-                      tag={tag}
-                    />
-                  }).toArray()
-              }
               </div>
             )
           }).toArray()

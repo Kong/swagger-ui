@@ -97,13 +97,12 @@ export default class Responses extends React.Component {
             </div>
 
         }
-        {isSpecOAS3 ? null :
-          <div className="opblock-section-header light">
+        {
+            <div className="opblock-section-header light">
             <h4>Example Request</h4>
           </div>
         }
-          
-        {isSpecOAS3 ? null :
+        {
           <CodeSnippetWidget har={har} snippets={snippets} />
         }
         <div className="opblock-section-header light">

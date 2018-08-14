@@ -48,13 +48,13 @@ export default class Operations extends React.Component {
       }
     }
 
-    if (!parsedSpec.openapi) {
+    // if (!parsedSpec.openapi) {
       try {
         hars = swagger2har(parsedSpec)
       } catch (error) {
         console.trace(error)
       }
-    }
+    // }
 
     if (hars != undefined) {
       hars.forEach(har => {

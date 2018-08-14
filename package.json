@@ -75,7 +75,7 @@
     "reselect": "^2.5.4",
     "serialize-error": "^2.1.0",
     "swagger-client": "^3.8.11",
-    "swagger2har": "0.1.0",
+    "swagger2har": "git+https://github.com/kong/swagger2har.git#44145f046b07242f4f98af16e11c60d43c84008f",
     "url-parse": "^1.1.8",
     "xml": "1.0.1",
     "xml-but-prettier": "^1.0.1",

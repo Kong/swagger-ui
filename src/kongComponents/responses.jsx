@@ -68,6 +68,7 @@ export default class Responses extends React.Component {
       producesValue,
       displayRequestDuration
     } = this.props
+
     let defaultCode = defaultStatusCode(responses)
 
     const ContentType = getComponent("contentType")
@@ -96,15 +97,17 @@ export default class Responses extends React.Component {
             </div>
 
         }
-        <div className="opblock-section-header light">
-          <h4>Example Request</h4>
-        </div>
-
-        <CodeSnippetWidget har={har} snippets={snippets} />
-
+        {
+            <div className="opblock-section-header light">
+            <h4>Example Request</h4>
+          </div>
+        }
+        {
+          <CodeSnippetWidget har={har} snippets={snippets} />
+        }
         <div className="opblock-section-header light">
           <h4>Responses</h4>
-          {specSelectors.isOAS3() ? null :
+          {isSpecOAS3 ? null :
             <ContentType value={producesValue}
               onChange={this.onChangeProducesWrapper}
               contentTypes={produces}

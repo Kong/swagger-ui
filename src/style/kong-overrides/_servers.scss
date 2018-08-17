@@ -1,0 +1,10 @@
+.global-server-container {
+  section {
+    &.servers {
+      padding: 0 0 0 1rem;
+      .servers-title {
+        padding-right: 0.5rem;
+      }
+    }
+  }
+}

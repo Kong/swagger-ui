@@ -1,6 +1,5 @@
 node_modules
 .idea
-.vscode
 .deps_check
 .DS_Store
 .nyc_output

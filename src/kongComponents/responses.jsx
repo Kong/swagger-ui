@@ -40,6 +40,7 @@ export default class Responses extends React.Component {
       || this.props.displayRequestDuration !== nextProps.displayRequestDuration
       || this.props.path !== nextProps.path
       || this.props.method !== nextProps.method
+      || this.props.har !== nextProps.har
     return render
   }
 

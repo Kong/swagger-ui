@@ -10,6 +10,7 @@ export default class Operations extends React.Component {
     specSelectors: PropTypes.object.isRequired,
     specActions: PropTypes.object.isRequired,
     oas3Actions: PropTypes.object.isRequired,
+    oas3Selectors: PropTypes.object.isRequired,
     getComponent: PropTypes.func.isRequired,
     layoutSelectors: PropTypes.object.isRequired,
     layoutActions: PropTypes.object.isRequired,
@@ -21,6 +22,7 @@ export default class Operations extends React.Component {
   render() {
     let {
       specSelectors,
+      oas3Selectors,
       getComponent,
       layoutSelectors,
       layoutActions,
@@ -32,6 +34,8 @@ export default class Operations extends React.Component {
     const Markdown = getComponent("Markdown")
 
     const specStr = specSelectors.specStr()
+    const selectedServer = oas3Selectors.selectedServer()
+
     let parsedSpec
     let hars
     let harsKeyed = {}
@@ -48,7 +52,7 @@ export default class Operations extends React.Component {
 
     if(parsedSpec) {
       try {
-        hars = swagger2har(parsedSpec)
+        hars = swagger2har(parsedSpec, selectedServer)
       } catch (error) {
         console.trace(error)
       }

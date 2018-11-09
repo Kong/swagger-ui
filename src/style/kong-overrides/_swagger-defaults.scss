@@ -11,7 +11,7 @@ h4 {
   font-size: 15px;
   font-weight: 400;
   border-radius: 4px !important;
-  border: 1px solid $borderLight; 
+  border: 1px solid $borderLight;
   box-shadow: none;
   &.try-out__btn {
     width: 117px;
@@ -62,7 +62,7 @@ select {
 .loading-container .loading {
   &:before {
     border-color: rgba(0,0,0,.5);
-    border-top-color: $borderLight; 
+    border-top-color: $borderLight;
   }
   &:after {
     color: #fff;
@@ -99,6 +99,13 @@ select {
 
 .swagger-ui .info p, .swagger-ui .info li, .swagger-ui .info table {
   line-height: 1.4;
+}
+
+.swagger-ui .info code {
+  display: inline-block;
+  word-break: break-all;
+  display: inline-block;
+  white-space: normal;
 }
 
 .example p {

@@ -19,14 +19,7 @@ export default class ParameterRow extends Component {
 
   constructor(props, context) {
     super(props, context)
-
-    let { specSelectors, pathMethod, param } = props
-    let defaultValue = param.get("default")
-    let parameter = specSelectors.getParameter(pathMethod, param.get("name"), param.get("in"))
-    let value = parameter ? parameter.get("value") : ""
-    if (defaultValue !== undefined && value === undefined) {
-      this.onChangeWrapper(defaultValue)
-    }
+    this.setDefaultValue()
   }
 
   componentWillReceiveProps(props) {
@@ -34,7 +27,6 @@ export default class ParameterRow extends Component {
     let { isOAS3 } = specSelectors
 
     let example = param.get("example")
-    let defaultValue = param.get("default")
     let parameter = specSelectors.getParameter(pathMethod, param.get("name"), param.get("in"))
     let enumValue
 
@@ -52,14 +44,31 @@ export default class ParameterRow extends Component {
       value = paramValue
     } else if (example !== undefined) {
       value = example
-    } else if (defaultValue !== undefined) {
-      value = defaultValue
     } else if (param.get("required") && enumValue && enumValue.size) {
       value = enumValue.first()
     }
 
     if (value !== undefined) {
       this.onChangeWrapper(value)
+    }
+  }
+
+  setDefaultValue = () => {
+    let { specSelectors, pathMethod, param } = this.props
+     if (param.get("value") !== undefined) {
+      return
+    }
+     let schema = specSelectors.isOAS3() ? param.get("schema", Map({})) : param
+     let defaultValue = schema.get("default")
+    let xExampleValue = param.get("x-example") // Swagger 2 only
+    let parameter = specSelectors.parameterWithMeta(pathMethod, param.get("name"), param.get("in"))
+    let value = parameter ? parameter.get("value") : ""
+     if( param.get("in") !== "body" ) {
+      if ( xExampleValue !== undefined && value === undefined && specSelectors.isSwagger2() ) {
+        this.onChangeWrapper(xExampleValue)
+      } else if ( defaultValue !== undefined && value === undefined ) {
+        this.onChangeWrapper(defaultValue)
+      }
     }
   }
 
@@ -96,6 +105,8 @@ export default class ParameterRow extends Component {
     const Markdown = getComponent("Markdown")
     const ParameterExt = getComponent("ParameterExt")
 
+    let paramWithMeta = specSelectors.parameterWithMeta(pathMethod, param.get("name"), param.get("in"))
+
     let schema = param.get("schema")
     let type = isOAS3 && isOAS3() ? param.getIn(["schema", "type"]) : param.get("type")
     let isFormData = inType === "formData"
@@ -103,7 +114,7 @@ export default class ParameterRow extends Component {
     let required = param.get("required")
     let itemType = param.getIn(isOAS3 && isOAS3() ? ["schema", "items", "type"] : ["items", "type"])
     let parameter = specSelectors.getParameter(pathMethod, param.get("name"), param.get("in"))
-    let value = parameter ? parameter.get("value") : ""
+    let value = paramWithMeta ? paramWithMeta.get("value") : ""
     let extensions = getExtensions(param)
 
     return (

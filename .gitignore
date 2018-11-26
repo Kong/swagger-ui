@@ -10,3 +10,7 @@ selenium-debug.log
 test/e2e/db.json
 docs/_book
 yarn-error.log
+
+# Cypress
+test/e2e-cypress/screenshots
+test/e2e-cypress/videos

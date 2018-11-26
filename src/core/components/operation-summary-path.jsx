@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react"
 import PropTypes from "prop-types"
 import { Iterable } from "immutable"
+import { createDeepLinkPath } from "core/utils"
 import ImPropTypes from "react-immutable-proptypes"
 
 export default class OperationSummaryPath extends PureComponent{
@@ -15,7 +16,6 @@ export default class OperationSummaryPath extends PureComponent{
     let {
       getComponent,
       operationProps,
-      specPath,
     } = this.props
 
 
@@ -28,9 +28,6 @@ export default class OperationSummaryPath extends PureComponent{
       isDeepLinkingEnabled,
     } = operationProps.toJS()
 
-    let isShownKey = ["operations", tag, operationId]
-
-    const JumpToPath = getComponent("JumpToPath", true)
     const DeepLink = getComponent( "DeepLink" )
 
     return(
@@ -38,9 +35,8 @@ export default class OperationSummaryPath extends PureComponent{
               <DeepLink
                   enabled={isDeepLinkingEnabled}
                   isShown={isShown}
-                  path={`${isShownKey.join("/")}`}
+                  path={createDeepLinkPath(`${tag}/${operationId}`)}
                   text={path} />
-                <JumpToPath path={specPath} />{/* TODO: use wrapComponents here, swagger-ui doesn't care about jumpToPath */}
               </span>
 
     )

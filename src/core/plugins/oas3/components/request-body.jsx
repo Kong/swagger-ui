@@ -1,8 +1,8 @@
 import React from "react"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
-import { getSampleSchema } from "core/utils"
-import { Map, OrderedMap } from "immutable"
+import { Map, OrderedMap, List } from "immutable"
+import { getCommonExtensions, getSampleSchema } from "core/utils"
 
 const RequestBody = ({
   requestBody,
@@ -24,17 +24,19 @@ const RequestBody = ({
   const ModelExample = getComponent("modelExample")
   const RequestBodyEditor = getComponent("RequestBodyEditor")
 
+  const { showCommonExtensions } = getConfigs()
+
   const requestBodyDescription = (requestBody && requestBody.get("description")) || null
   const requestBodyContent = (requestBody && requestBody.get("content")) || new OrderedMap()
   contentType = contentType || requestBodyContent.keySeq().first()
 
   const mediaTypeValue = requestBodyContent.get(contentType)
 
-  const isObjectContent = mediaTypeValue.getIn(["schema", "type"]) === "object"
-
   if(!mediaTypeValue) {
     return null
   }
+
+  const isObjectContent = mediaTypeValue.getIn(["schema", "type"]) === "object"
 
   if(
     contentType === "application/octet-stream"
@@ -59,8 +61,9 @@ const RequestBody = ({
     || contentType.indexOf("multipart/") === 0))
   {
     const JsonSchemaForm = getComponent("JsonSchemaForm")
-    const HighlightCode = getComponent("highlightCode")
-    const bodyProperties = requestBody.getIn(["content", contentType, "schema", "properties"], OrderedMap())
+    const ParameterExt = getComponent("ParameterExt")
+    const schemaForContentType = requestBody.getIn(["content", contentType, "schema"], OrderedMap())
+    const bodyProperties = schemaForContentType.getIn([ "properties"], OrderedMap())
     requestBodyValue = Map.isMap(requestBodyValue) ? requestBodyValue : OrderedMap()
 
     return <div className="table-container">
@@ -68,9 +71,20 @@ const RequestBody = ({
         <tbody>
           {
             bodyProperties.map((prop, key) => {
-              const required = prop.get("required")
+              let commonExt = showCommonExtensions ? getCommonExtensions(prop) : null
+              const required = schemaForContentType.get("required", List()).includes(key)
               const type = prop.get("type")
               const format = prop.get("format")
+              const description = prop.get("description")
+              const currentValue = requestBodyValue.get(key)
+              
+              let initialValue = prop.get("default") || prop.get("example") || ""
+
+              if(initialValue === "" && type === "object") {
+                initialValue = getSampleSchema(prop, false, {
+                  includeWriteOnly: true
+                })
+              }
 
               const isFile = type === "string" && (format === "binary" || format === "base64")
 
@@ -83,24 +97,25 @@ const RequestBody = ({
                         <div className="parameter__type">
                           { type }
                           { format && <span className="prop-format">(${format})</span>}
+                          {!showCommonExtensions || !commonExt.size ? null : commonExt.map((v, key) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} />)}
                         </div>
                         <div className="parameter__deprecated">
                           { prop.get("deprecated") ? "deprecated": null }
                         </div>
                       </td>
                       <td className="col parameters-col_description">
-                        {isExecute ?
-                        <JsonSchemaForm
+                        { description }
+                        {isExecute ? <div><JsonSchemaForm
                           fn={fn}
                           dispatchInitialValue={!isFile}
                           schema={prop}
+                          description={key}
                           getComponent={getComponent}
-                          value={requestBodyValue.get(key) || getSampleSchema(prop)}
+                          value={currentValue === undefined ? initialValue : currentValue}
                           onChange={(value) => {
                             onChange(value, [key])
                           }}
-                          />
-                        : <HighlightCode className="example" value={ getSampleSchema(prop) } />}
+                        /></div> : null }
                       </td>
                       </tr>
             })

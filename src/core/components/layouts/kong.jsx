@@ -6,112 +6,84 @@ export default class KongLayout extends React.Component {
   static propTypes = {
     errSelectors: PropTypes.object.isRequired,
     errActions: PropTypes.object.isRequired,
-    specActions: PropTypes.object.isRequired,
     specSelectors: PropTypes.object.isRequired,
     oas3Selectors: PropTypes.object.isRequired,
     oas3Actions: PropTypes.object.isRequired,
-    layoutSelectors: PropTypes.object.isRequired,
-    layoutActions: PropTypes.object.isRequired,
     getComponent: PropTypes.func.isRequired
   }
 
-  onFilterChange = (e) => {
-    let { target: { value } } = e
-    this.props.layoutActions.updateFilter(value)
-  }
-
   render() {
-    let {
-      specSelectors,
-      specActions,
-      getComponent,
-      layoutSelectors,
-      oas3Selectors,
-      oas3Actions
-    } = this.props
+    let {specSelectors, getComponent} = this.props
 
-    let info = specSelectors.info()
-    let url = specSelectors.url()
-    let basePath = specSelectors.basePath()
-    let host = specSelectors.host()
-    let securityDefinitions = specSelectors.securityDefinitions()
-    let externalDocs = specSelectors.externalDocs()
-    let schemes = specSelectors.schemes()
-    let servers = specSelectors.servers()
-
-    let Info = getComponent("info")
-    let AuthorizeBtn = getComponent("authorizeBtn", true)
-    let Col = getComponent("Col")
-    let Servers = getComponent("Servers")
-    let Errors = getComponent("errors", true)
-
+    let SvgAssets = getComponent("SvgAssets")
+    let InfoContainer = getComponent("InfoContainer", true)
+    let VersionPragmaFilter = getComponent("VersionPragmaFilter")
     let KongOperations = getComponent("KongOperations", true)
 
-    let isLoading = specSelectors.loadingStatus() === "loading"
-    let isFailed = specSelectors.loadingStatus() === "failed"
-    let filter = layoutSelectors.currentFilter()
+    let Errors = getComponent("errors", true)
 
-    let inputStyle = {}
-    if (isFailed) inputStyle.color = "red"
-    if (isLoading) inputStyle.color = "#aaa"
+    const ServersContainer = getComponent("ServersContainer", true)
+    const SchemesContainer = getComponent("SchemesContainer", true)
+    const AuthorizeBtnContainer = getComponent("AuthorizeBtnContainer", true)
+    const FilterContainer = getComponent("FilterContainer", true)
+    let isSwagger2 = specSelectors.isSwagger2()
+    let isOAS3 = specSelectors.isOAS3()
 
     const isSpecEmpty = !specSelectors.specStr()
 
-    if (isSpecEmpty) {
-      return <h4>No spec provided.</h4>
+    if(isSpecEmpty) {
+      let loadingMessage
+      let isLoading = specSelectors.loadingStatus() === "loading"
+      if(isLoading) {
+        loadingMessage = <div className="loading"></div>
+      } else {
+        loadingMessage = <h4>No API definition provided.</h4>
+      }
+
+      return <div className="swagger-ui">
+        <div className="loading-container">
+          {loadingMessage}
+        </div>
+      </div>
     }
 
-    return (
+    const servers = specSelectors.servers()
+    const schemes = specSelectors.schemes()
 
+    const hasServers = servers && servers.size
+    const hasSchemes = schemes && schemes.size
+    const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
+
+    return (
       <div>
         <div className="side-panel"></div>
-        <div className="wrapper">
-          <div className="col">
-            <Errors />
-            <div className="information-container">
+        <div className='swagger-ui'>
+          <SvgAssets />
+          <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
+            <Errors/>
 
-              {schemes && schemes.size || securityDefinitions ? (
-                <div>
-                  {securityDefinitions ? (
-                    <AuthorizeBtn />
-                  ) : null}
+            {hasServers || hasSchemes || hasSecurityDefinitions ? (
+              <div className="scheme-container">
+                <div className="col">
+                  {hasServers ? (<ServersContainer />) : null}
+                  {hasSchemes ? (<SchemesContainer />) : null}
+                  {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
                 </div>
-              ) : null}
-
-              {info.count() ? (
-                <Info info={info} url={url} host={host} basePath={basePath} externalDocs={externalDocs} getComponent={getComponent} />
-              ) : null}
-            </div>
-
-            {servers && servers.size ? (
-              <div className="global-server-container">
-                <Col className="servers wrapper" mobile={12}>
-                  <span className="servers-title">Server</span>
-                  <Servers
-                    servers={servers}
-                    currentServer={oas3Selectors.selectedServer()}
-                    setSelectedServer={oas3Actions.setSelectedServer}
-                    setServerVariableValue={oas3Actions.setServerVariableValue}
-                    getServerVariable={oas3Selectors.serverVariableValue}
-                    getEffectiveServerValue={oas3Selectors.serverEffectiveValue}
-                  />
-                </Col>
               </div>
-
             ) : null}
 
-            {
-              filter === null || filter === false ? null :
-                <div className="filter-container">
-                  <Col className="filter wrapper" mobile={12}>
-                    <input className="operation-filter-input" placeholder="Filter by tag" type="text" onChange={this.onFilterChange} value={filter === true || filter === "true" ? "" : filter} disabled={isLoading} style={inputStyle} />
-                  </Col>
-                </div>
-            }
-          </div>
+            <div className="information-container">
+              <div className="col">
+                <InfoContainer/>
+              </div>
+            </div>
+
+            <FilterContainer/>
+            <KongOperations/>
+
+          </VersionPragmaFilter>
         </div>
-        <KongOperations />
       </div>
-    )
+      )
   }
 }

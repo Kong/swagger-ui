@@ -18,9 +18,7 @@ export default class BaseLayout extends React.Component {
     let SvgAssets = getComponent("SvgAssets")
     let InfoContainer = getComponent("InfoContainer", true)
     let VersionPragmaFilter = getComponent("VersionPragmaFilter")
-    let Operations = getComponent("KongOperations", true)
-
-    // let Operations = getComponent("operations", true)
+    let Operations = getComponent("operations", true)
     let Models = getComponent("Models", true)
     let Row = getComponent("Row")
     let Col = getComponent("Col")
@@ -59,40 +57,41 @@ export default class BaseLayout extends React.Component {
     const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
 
     return (
-      <div>
-        <div className="side-panel"></div>
-        <div className="wrapper">
-          <div className="col">
-            <SvgAssets />
-            <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
-              <Errors/>
-              <Row className="information-container">
-                <Col mobile={12}>
-                  <InfoContainer/>
+
+      <div className='swagger-ui'>
+          <SvgAssets />
+          <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
+            <Errors/>
+            <Row className="information-container">
+              <Col mobile={12}>
+                <InfoContainer/>
+              </Col>
+            </Row>
+
+            {hasServers || hasSchemes || hasSecurityDefinitions ? (
+              <div className="scheme-container">
+                <Col className="schemes wrapper" mobile={12}>
+                  {hasServers ? (<ServersContainer />) : null}
+                  {hasSchemes ? (<SchemesContainer />) : null}
+                  {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
                 </Col>
-              </Row>
+              </div>
+            ) : null}
 
-              {hasServers || hasSchemes || hasSecurityDefinitions ? (
-                <div className="scheme-container">
-                  <Col className="schemes wrapper" mobile={12}>
-                    {hasServers ? (<ServersContainer />) : null}
-                    {hasSchemes ? (<SchemesContainer />) : null}
-                    {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
-                  </Col>
-                </div>
-              ) : null}
+            <FilterContainer/>
 
-              <FilterContainer/>
-
-              <Row>
-                <Col mobile={12} desktop={12} >
-                  <Operations/>
-                </Col>
-              </Row>
-            </VersionPragmaFilter>
-          </div>
+            <Row>
+              <Col mobile={12} desktop={12} >
+                <Operations/>
+              </Col>
+            </Row>
+            <Row>
+              <Col mobile={12} desktop={12} >
+                <Models/>
+              </Col>
+            </Row>
+          </VersionPragmaFilter>
         </div>
-      </div>
       )
   }
 }

@@ -41,7 +41,7 @@ export default class Operations extends React.Component {
     let taggedOps = specSelectors.taggedOperations()
 
     const KongOperationContainer = getComponent("KongOperationContainer", true)
-    const OperationTag = getComponent("OperationTag")
+    const KongOperationTag = getComponent("KongOperationTag")
     const specStr = specSelectors.specStr()
 
     // TODO: update this to handle schemes as well as servers
@@ -99,7 +99,7 @@ export default class Operations extends React.Component {
           taggedOps.map( (tagObj, tag) => {
             const operations = tagObj.get("operations")
             return (
-              <OperationTag
+              <KongOperationTag
                 key={"operation-" + tag}
                 tagObj={tagObj}
                 tag={tag}
@@ -139,7 +139,7 @@ export default class Operations extends React.Component {
                 }
 
 
-              </OperationTag>
+              </KongOperationTag>
             )
           }).toArray()
         }

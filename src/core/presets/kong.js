@@ -1,6 +1,7 @@
 import KongOperations from "../../kongComponents/Operations"
 import KongOperationContainer from "../../kongComponents/OperationContainer"
 import KongOperation from "../../kongComponents/Operation"
+import KongOperationTag from "../../kongComponents/operation-tag"
 import KongParameters from "../../kongComponents/Parameters"
 import KongParameterRow from "../../kongComponents/Parameter-row"
 import KongModelExample from "../../kongComponents/model-example"
@@ -15,6 +16,7 @@ export default function () {
       KongOperations,
       KongOperationContainer,
       KongOperation,
+      KongOperationTag,
       KongParameters,
       KongParameterRow,
       KongModelExample,

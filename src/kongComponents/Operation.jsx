@@ -11,6 +11,7 @@ import Responses from "./responses"
 
 export default class Operation extends PureComponent {
   static propTypes = {
+    specPath: ImPropTypes.list.isRequired,
     operation: PropTypes.instanceOf(Iterable).isRequired,
     response: PropTypes.instanceOf(Iterable),
     request: PropTypes.instanceOf(Iterable),
@@ -41,6 +42,7 @@ export default class Operation extends PureComponent {
 
   render () {
     let {
+      specPath,
       response,
       request,
       toggleShown,
@@ -171,6 +173,7 @@ export default class Operation extends PureComponent {
 
             <KongParameters
               parameters={parameters}
+              specPath={specPath.push("parameters")}
               operation={operation}
               onChangeKey={onChangeKey}
               onTryoutClick={onTryoutClick}
@@ -254,6 +257,7 @@ export default class Operation extends PureComponent {
               specActions={specActions}
               produces={produces}
               producesValue={operation.get("produces_value")}
+              specPath={specPath.push("responses")}
               path={path}
               method={method}
               displayRequestDuration={displayRequestDuration}

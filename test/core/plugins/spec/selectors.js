@@ -7,14 +7,16 @@ import {
   contentTypeValues,
   operationScheme,
   specJsonWithResolvedSubtrees,
-  operationConsumes
+  producesOptionsFor,
 } from "corePlugins/spec/selectors"
 
 import Petstore from "./assets/petstore.json"
 import {
   operationWithMeta,
   parameterWithMeta,
-  parameterWithMetaByIdentity
+  parameterWithMetaByIdentity,
+  parameterInclusionSettingFor,
+  consumesOptionsFor
 } from "../../../../src/core/plugins/spec/selectors"
 
 describe("spec plugin - selectors", function(){
@@ -250,34 +252,6 @@ describe("spec plugin - selectors", function(){
       })
     })
 
-  })
-
-  describe("operationConsumes", function(){
-    it("should return the operationConsumes for an operation", function(){
-      // Given
-      let state = fromJS({
-        json: {
-          paths: {
-            "/one": {
-              get: {
-                consumes: [
-                  "application/xml",
-                  "application/something-else"
-                ]
-              }
-            }
-          }
-        }
-      })
-
-      // When
-      let contentTypes = operationConsumes(state, [ "/one", "get" ])
-      // Then
-      expect(contentTypes.toJS()).toEqual([
-        "application/xml",
-        "application/something-else"
-      ])
-    })
   })
 
   describe("operationScheme", function(){
@@ -710,6 +684,304 @@ describe("spec plugin - selectors", function(){
         in: "body",
         value: "abc123"
       })
+    })
+  })
+  describe("parameterInclusionSettingFor", function() {
+    it("should support getting name+in param inclusion settings", function () {
+      const param = fromJS({
+        name: "param",
+        in: "query",
+        allowEmptyValue: true
+      })
+
+      const state = fromJS({
+        json: {
+          paths: {
+            "/": {
+              "get": {
+                parameters: [
+                  param
+                ]
+              }
+            }
+          }
+        },
+        meta: {
+          paths: {
+            "/": {
+              "get": {
+                "parameter_inclusions": {
+                  [`param.query`]: true
+                }
+              }
+            }
+          }
+        }
+      })
+
+      const result = parameterInclusionSettingFor(state, ["/", "get"], "param", "query")
+
+      expect(result).toEqual(true)
+    })
+  })
+  describe("producesOptionsFor", function() {
+    it("should return an operation produces value", function () {
+      const state = fromJS({
+        json: {
+          paths: {
+            "/": {
+              "get": {
+                description: "my operation",
+                produces: [
+                  "operation/one",
+                  "operation/two",
+                ]
+              }
+            }
+          }
+        }
+      })
+
+      const result = producesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "operation/one",
+        "operation/two",
+      ])
+    })
+    it("should return a path item produces value", function () {
+      const state = fromJS({
+        json: {
+          paths: {
+            "/": {
+              "get": {
+                description: "my operation",
+                produces: [
+                  "path-item/one",
+                  "path-item/two",
+                ]
+              }
+            }
+          }
+        }
+      })
+
+      const result = producesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "path-item/one",
+        "path-item/two",
+      ])
+    })
+    it("should return a global produces value", function () {
+      const state = fromJS({
+        json: {
+          produces: [
+            "global/one",
+            "global/two",
+          ],
+          paths: {
+            "/": {
+              "get": {
+                description: "my operation"
+              }
+            }
+          }
+        }
+      })
+
+      const result = producesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "global/one",
+        "global/two",
+      ])
+    })
+    it("should favor an operation produces value over a path-item value", function () {
+      const state = fromJS({
+        json: {
+          paths: {
+            "/": {
+              produces: [
+                "path-item/one",
+                "path-item/two",
+              ],
+              "get": {
+                description: "my operation",
+                produces: [
+                  "operation/one",
+                  "operation/two",
+                ]
+              }
+            }
+          }
+        }
+      })
+
+      const result = producesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "operation/one",
+        "operation/two",
+      ])
+    })
+    it("should favor a path-item produces value over a global value", function () {
+      const state = fromJS({
+        json: {
+          produces: [
+            "global/one",
+            "global/two",
+          ],
+          paths: {
+            "/": {
+              produces: [
+                "path-item/one",
+                "path-item/two",
+              ],
+              "get": {
+                description: "my operation"
+              }
+            }
+          }
+        }
+      })
+
+      const result = producesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "path-item/one",
+        "path-item/two",
+      ])
+    })
+  })
+  describe("consumesOptionsFor", function() {
+    it("should return an operation consumes value", function () {
+      const state = fromJS({
+        json: {
+          paths: {
+            "/": {
+              "get": {
+                description: "my operation",
+                consumes: [
+                  "operation/one",
+                  "operation/two",
+                ]
+              }
+            }
+          }
+        }
+      })
+
+      const result = consumesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "operation/one",
+        "operation/two",
+      ])
+    })
+    it("should return a path item consumes value", function () {
+      const state = fromJS({
+        json: {
+          paths: {
+            "/": {
+              "get": {
+                description: "my operation",
+                consumes: [
+                  "path-item/one",
+                  "path-item/two",
+                ]
+              }
+            }
+          }
+        }
+      })
+
+      const result = consumesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "path-item/one",
+        "path-item/two",
+      ])
+    })
+    it("should return a global consumes value", function () {
+      const state = fromJS({
+        json: {
+          consumes: [
+            "global/one",
+            "global/two",
+          ],
+          paths: {
+            "/": {
+              "get": {
+                description: "my operation"
+              }
+            }
+          }
+        }
+      })
+
+      const result = consumesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "global/one",
+        "global/two",
+      ])
+    })
+    it("should favor an operation consumes value over a path-item value", function () {
+      const state = fromJS({
+        json: {
+          paths: {
+            "/": {
+              consumes: [
+                "path-item/one",
+                "path-item/two",
+              ],
+              "get": {
+                description: "my operation",
+                consumes: [
+                  "operation/one",
+                  "operation/two",
+                ]
+              }
+            }
+          }
+        }
+      })
+
+      const result = consumesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "operation/one",
+        "operation/two",
+      ])
+    })
+    it("should favor a path-item consumes value over a global value", function () {
+      const state = fromJS({
+        json: {
+          consumes: [
+            "global/one",
+            "global/two",
+          ],
+          paths: {
+            "/": {
+              consumes: [
+                "path-item/one",
+                "path-item/two",
+              ],
+              "get": {
+                description: "my operation"
+              }
+            }
+          }
+        }
+      })
+
+      const result = consumesOptionsFor(state, ["/", "get"])
+
+      expect(result.toJS()).toEqual([
+        "path-item/one",
+        "path-item/two",
+      ])
     })
   })
 })

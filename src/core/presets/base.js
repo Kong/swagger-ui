@@ -18,6 +18,7 @@ import OperationContainer from "core/containers/OperationContainer"
 import App from "core/components/app"
 import AuthorizationPopup from "core/components/auth/authorization-popup"
 import AuthorizeBtn from "core/components/auth/authorize-btn"
+import AuthorizeBtnContainer from "core/containers/authorize-btn"
 import AuthorizeOperationBtn from "core/components/auth/authorize-operation-btn"
 import Auths from "core/components/auth/auths"
 import AuthItem from "core/components/auth/auth-item"
@@ -42,6 +43,7 @@ import Response from "core/components/response"
 import ResponseBody from "core/components/response-body"
 import Parameters from "core/components/parameters"
 import ParameterExt from "core/components/parameter-extension"
+import ParameterIncludeEmpty from "core/components/parameter-include-empty"
 import ParameterRow from "core/components/parameter-row"
 import Execute from "core/components/execute"
 import Headers from "core/components/headers"
@@ -91,6 +93,7 @@ export default function () {
       App,
       authorizationPopup: AuthorizationPopup,
       authorizeBtn: AuthorizeBtn,
+      AuthorizeBtnContainer,
       authorizeOperationBtn: AuthorizeOperationBtn,
       auths: Auths,
       AuthItem: AuthItem,
@@ -145,6 +148,7 @@ export default function () {
       OperationExt,
       OperationExtRow,
       ParameterExt,
+      ParameterIncludeEmpty,
       OperationTag,
       OperationContainer,
       DeepLink,

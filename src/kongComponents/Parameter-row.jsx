@@ -14,7 +14,8 @@ export default class ParameterRow extends Component {
     onChangeConsumes: PropTypes.func.isRequired,
     specSelectors: PropTypes.object.isRequired,
     pathMethod: PropTypes.array.isRequired,
-    getConfigs: PropTypes.func.isRequired
+    getConfigs: PropTypes.func.isRequired,
+    specPath: ImPropTypes.list.isRequired
   }
 
   constructor(props, context) {
@@ -78,7 +79,7 @@ export default class ParameterRow extends Component {
   }
 
   render() {
-    let { param, onChange, getComponent, getConfigs, isExecute, fn, onChangeConsumes, specSelectors, pathMethod } = this.props
+    let { param, onChange, getComponent, getConfigs, isExecute, fn, onChangeConsumes, specSelectors, pathMethod, specPath } = this.props
 
     let { isOAS3 } = specSelectors
 
@@ -92,7 +93,7 @@ export default class ParameterRow extends Component {
       : <KongParamBody getComponent={getComponent}
         fn={fn}
         param={param}
-        consumes={specSelectors.operationConsumes(pathMethod)}
+        consumes={specSelectors.consumesOptionsFor(pathMethod)}
         consumesValue={specSelectors.contentTypeValues(pathMethod).get("requestContentType")}
         onChange={onChange}
         onChangeConsumes={onChangeConsumes}
@@ -147,6 +148,7 @@ export default class ParameterRow extends Component {
           }
           {
             bodyParam && schema ? <KongModelExample getComponent={getComponent}
+              specPath={specPath.push("schema")}
               getConfigs={getConfigs}
               isExecute={isExecute}
               specSelectors={specSelectors}

@@ -22,10 +22,11 @@ export default class BaseLayout extends React.Component {
     let Models = getComponent("Models", true)
     let Row = getComponent("Row")
     let Col = getComponent("Col")
-    let ServersContainer = getComponent("ServersContainer", true)
     let Errors = getComponent("errors", true)
 
+    const ServersContainer = getComponent("ServersContainer", true)
     const SchemesContainer = getComponent("SchemesContainer", true)
+    const AuthorizeBtnContainer = getComponent("AuthorizeBtnContainer", true)
     const FilterContainer = getComponent("FilterContainer", true)
     let isSwagger2 = specSelectors.isSwagger2()
     let isOAS3 = specSelectors.isOAS3()
@@ -48,6 +49,13 @@ export default class BaseLayout extends React.Component {
       </div>
     }
 
+    const servers = specSelectors.servers()
+    const schemes = specSelectors.schemes()
+
+    const hasServers = servers && servers.size
+    const hasSchemes = schemes && schemes.size
+    const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
+
     return (
 
       <div className='swagger-ui'>
@@ -60,9 +68,15 @@ export default class BaseLayout extends React.Component {
               </Col>
             </Row>
 
-            <SchemesContainer/>
-
-            <ServersContainer/>
+            {hasServers || hasSchemes || hasSecurityDefinitions ? (
+              <div className="scheme-container">
+                <Col className="schemes wrapper" mobile={12}>
+                  {hasServers ? (<ServersContainer />) : null}
+                  {hasSchemes ? (<SchemesContainer />) : null}
+                  {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
+                </Col>
+              </div>
+            ) : null}
 
             <FilterContainer/>
 

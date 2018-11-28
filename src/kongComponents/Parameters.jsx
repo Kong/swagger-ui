@@ -23,7 +23,8 @@ export default class Parameters extends Component {
     onCancelClick: PropTypes.func,
     onChangeKey: PropTypes.array,
     pathMethod: PropTypes.array.isRequired,
-    getConfigs: PropTypes.func.isRequired
+    getConfigs: PropTypes.func.isRequired,
+    specPath: ImPropTypes.list.isRequired,
   }
 
 
@@ -33,6 +34,7 @@ export default class Parameters extends Component {
     tryItOutEnabled: false,
     allowTryItOut: true,
     onChangeKey: [],
+    specPath: [],
   }
 
   onChange = (param, value, isXml) => {
@@ -61,6 +63,7 @@ export default class Parameters extends Component {
       parameters,
       allowTryItOut,
       tryItOutEnabled,
+      specPath,
 
       fn,
       getComponent,
@@ -84,8 +87,9 @@ export default class Parameters extends Component {
         {!parameters.count() ? <div className="opblock-description-wrapper"><p>No parameters</p></div> :
           <div className="parameters">
             {
-              eachMap(parameters, (parameter) => (
+              eachMap(parameters, (parameter, i) => (
                 <ParameterRow fn={fn}
+                  specPath={specPath.push(i.toString())}
                   getComponent={getComponent}
                   getConfigs={getConfigs}
                   param={parameter}

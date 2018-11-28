@@ -148,7 +148,7 @@
 
         padding: 10px 20px 0;
 
-        label
+        >label
         {
             font-size: 12px;
             font-weight: bold;
@@ -161,7 +161,7 @@
 
             @include text_headline();
 
-            span
+            >span
             {
                 padding: 0 10px 0 0;
             }
@@ -216,26 +216,6 @@
 
         @include text_code();
 
-        .view-line-link
-        {
-            position: relative;
-            top: 2px;
-
-            width: 0;
-            margin: 0;
-
-            cursor: pointer;
-            transition: all .5s;
-        }
-
-        &:hover
-        {
-            .view-line-link
-            {
-                width: 18px;
-                margin: 0 5px;
-            }
-        }
     }
 
     .opblock-summary-path__deprecated
@@ -263,7 +243,30 @@
         border: 1px solid;
         border-radius: 3px;
         cursor: pointer;
+
+        .view-line-link
+        {
+            position: relative;
+            top: 2px;
+
+            width: 0;
+            margin: 0;
+
+            cursor: pointer;
+            transition: all .5s;
+        }
+
+        &:hover
+        {
+            .view-line-link
+            {
+                width: 18px;
+                margin: 0 5px;
+            }
+        }
     }
+
+
 
     &.opblock-post
     {
@@ -564,6 +567,33 @@
     }
 }
 
+.highlight-code {
+  position: relative;
+
+  > .microlight {
+    overflow-y: auto;
+    max-height: 400px;
+    min-height: 6em;
+  }
+}
+
+.download-contents {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+  background: #7d8293;
+  text-align: center;
+  padding: 5px;
+  border-radius: 4px;
+  font-family: sans-serif;
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+  height: 30px;
+  width: 75px;
+}
+
 .scheme-container
 {
     margin: 0 0 20px 0;
@@ -572,7 +602,7 @@
     .schemes
     {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
 
          > label
         {

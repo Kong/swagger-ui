@@ -41,7 +41,6 @@ export default class KongLayout extends React.Component {
 
     let Info = getComponent("info")
     let AuthorizeBtn = getComponent("authorizeBtn", true)
-    let Row = getComponent("Row")
     let Col = getComponent("Col")
     let Servers = getComponent("Servers")
     let Errors = getComponent("errors", true)

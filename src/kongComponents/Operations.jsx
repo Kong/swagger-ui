@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { createDeepLinkPath, sanitizeUrl } from "core/utils"
+import Im from "immutable"
 import YAML from "yaml-js"
 import swagger2har from "swagger2har"
 
@@ -137,9 +138,12 @@ export default class Operations extends React.Component {
                   operations.map(op => {
                     const path = op.get("path")
                     const method = op.get("method")
+                    const specPath = Im.List(["paths", path, method])
+
                     const key = `${path}-${method}`
                      return <KongOperationsContainer
                       key={key}
+                      specPath={specPath}
                       har={harsKeyed[key].har || null}
                       op={op}
                       path={path}

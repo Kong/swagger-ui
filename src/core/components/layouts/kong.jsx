@@ -79,6 +79,7 @@ export default class KongLayout extends React.Component {
             </div>
 
             <FilterContainer/>
+
             <KongOperations/>
 
           </VersionPragmaFilter>

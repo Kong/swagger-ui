@@ -1,5 +1,5 @@
 import KongOperations from "../../kongComponents/Operations"
-import KongOperationsContainer from "../../kongComponents/OperationContainer"
+import KongOperationContainer from "../../kongComponents/OperationContainer"
 import KongOperation from "../../kongComponents/Operation"
 import KongParameters from "../../kongComponents/Parameters"
 import KongParameterRow from "../../kongComponents/Parameter-row"
@@ -13,7 +13,7 @@ export default function () {
   let kongComponents = {
     components: {
       KongOperations,
-      KongOperationsContainer,
+      KongOperationContainer,
       KongOperation,
       KongParameters,
       KongParameterRow,

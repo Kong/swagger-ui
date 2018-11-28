@@ -1,7 +1,7 @@
+
+
 import React from "react"
 import PropTypes from "prop-types"
-
-// import OnlineValidatorBadge from "../kongComponents/online-validator-badge"
 
 export default class StandaloneLayout extends React.Component {
 
@@ -16,39 +16,54 @@ export default class StandaloneLayout extends React.Component {
   }
 
   render() {
-    let { getComponent, specSelectors } = this.props
+    let { getComponent, specSelectors, errSelectors } = this.props
 
     let Container = getComponent("Container")
     let Row = getComponent("Row")
     let Col = getComponent("Col")
+    let Errors = getComponent("errors", true)
 
-    const KongLayout = getComponent("KongLayout", true)
-    const OnlineValidatorBadge = getComponent("KongValidator", true)
+    const Topbar = getComponent("Topbar", true)
+    const BaseLayout = getComponent("BaseLayout", true)
+    const OnlineValidatorBadge = getComponent("onlineValidatorBadge", true)
 
     const loadingStatus = specSelectors.loadingStatus()
+    const lastErr = errSelectors.lastError()
+    const lastErrMsg = lastErr ? lastErr.get("message") : ""
 
     return (
 
       <Container className='swagger-ui'>
-        {loadingStatus === "loading" &&
-          <div className="info text-center">
-            <h4 className="title">Loading...</h4>
-          </div>
-        }
-        {loadingStatus === "failed" &&
+        { Topbar ? <Topbar /> : null }
+        { loadingStatus === "loading" &&
           <div className="info">
-            <h4 className="title">Failed to load spec.</h4>
+            <div className="loading-container">
+              <div className="loading"></div>
+            </div>
           </div>
         }
-        {loadingStatus === "failedConfig" &&
+        { loadingStatus === "failed" &&
+          <div className="info">
+            <div className="loading-container">
+              <h4 className="title">Failed to load API definition.</h4>
+              <Errors/>
+            </div>
+          </div>
+        }
+        { loadingStatus === "failedConfig" &&
           <div className="info" style={{ maxWidth: "880px", marginLeft: "auto", marginRight: "auto", textAlign: "center" }}>
-            <h4 className="title">Failed to load config.</h4>
+            <div className="loading-container">
+              <h4 className="title">Failed to load remote configuration.</h4>
+              <p>{lastErrMsg}</p>
+            </div>
           </div>
         }
-        {!loadingStatus || loadingStatus === "success" && <KongLayout />}
-        <div className="validator-badge">
-          <OnlineValidatorBadge />
-        </div>
+        { !loadingStatus || loadingStatus === "success" && <BaseLayout /> }
+        <Row>
+          <Col>
+            <OnlineValidatorBadge />
+          </Col>
+        </Row>
       </Container>
     )
   }

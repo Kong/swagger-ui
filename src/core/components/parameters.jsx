@@ -65,7 +65,7 @@ export default class Parameters extends Component {
       fn,
       getComponent,
       getConfigs,
-      specSelectors, 
+      specSelectors,
       specActions,
       pathMethod
     } = this.props
@@ -81,9 +81,9 @@ export default class Parameters extends Component {
           <div className="tab-header">
             <h4 className="opblock-title">Parameters</h4>
           </div>
-          {/* {allowTryItOut ? (
+          {allowTryItOut ? (
             <TryItOutButton enabled={tryItOutEnabled} onCancelClick={onCancelClick} onTryoutClick={onTryoutClick} />
-          ) : null} */}
+          ) : null}
         </div>
         { !parameters.count() ? <div className="opblock-description-wrapper"><p>No parameters</p></div> :
           <div className="table-container">

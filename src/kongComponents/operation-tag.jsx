@@ -54,7 +54,7 @@ export default class OperationTag extends React.Component {
 
     return (
       <div className={showTag ? "opblock-tag-section is-open" : "opblock-tag-section"} >
-        <div className="opblock-details col"></div>
+        <div className="opblock-details col">
           <h2
             className={!tagDescription ? "opblock-tag no-desc" : "opblock-tag" }
             id={isShownKey.join("-")}>
@@ -83,7 +83,10 @@ export default class OperationTag extends React.Component {
               }
             </p>
           }
+        </div>
+
         {children}
+
       </div>
     )
   }

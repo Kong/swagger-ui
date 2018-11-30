@@ -5,8 +5,6 @@ import cx from "classnames"
 import { fromJS, Seq, Iterable, List, Map } from "immutable"
 import { getSampleSchema, fromJSOrdered, stringify } from "core/utils"
 
-import ModelExample from "./model-example"
-
 const getExampleComponent = ( sampleResponse, examples, HighlightCode ) => {
   if ( examples && examples.size ) {
     return examples.entrySeq().map( ([ key, example ]) => {
@@ -26,7 +24,6 @@ const getExampleComponent = ( sampleResponse, examples, HighlightCode ) => {
   return null
 }
 
-
 export default class Response extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -43,6 +40,7 @@ export default class Response extends React.Component {
     getComponent: PropTypes.func.isRequired,
     getConfigs: PropTypes.func.isRequired,
     specSelectors: PropTypes.object.isRequired,
+    specPath: ImPropTypes.list.isRequired,
     fn: PropTypes.object.isRequired,
     contentType: PropTypes.string,
     controlsAcceptHeader: PropTypes.bool,
@@ -51,7 +49,7 @@ export default class Response extends React.Component {
 
   static defaultProps = {
     response: fromJS({}),
-    onContentTypeChange: () => { }
+    onContentTypeChange: () => {}
   };
 
   _onContentTypeChange = (value) => {
@@ -85,8 +83,10 @@ export default class Response extends React.Component {
     let links = response.get("links")
     const Headers = getComponent("headers")
     const HighlightCode = getComponent("highlightCode")
-    // const ModelExample = getComponent("modelExample")
-    const Markdown = getComponent("Markdown")
+    const ModelExample = getComponent("modelExample")
+    const Markdown = getComponent( "Markdown" )
+    const OperationLink = getComponent("operationLink")
+    const ContentType = getComponent("contentType")
 
     var sampleResponse
     var sampleSchema
@@ -110,7 +110,7 @@ export default class Response extends React.Component {
       specPathWithPossibleSchema = oas3SchemaForContentType ? List(["content", this.state.responseContentType, "schema"]) : specPath
     } else {
       schema = inferSchema(response.toJS()) // TODO: don't convert back and forth. Lets just stick with immutable for inferSchema
-     // specPathWithPossibleSchema = response.has("schema") ? specPath.push("schema") : specPath
+     specPathWithPossibleSchema = response.has("schema") ? specPath.push("schema") : specPath
       sampleResponse = schema ? getSampleSchema(schema, activeContentType, {
         includeReadOnly: true,
         includeWriteOnly: true // writeOnly has no filtering effect in swagger 2.0
@@ -127,32 +127,54 @@ export default class Response extends React.Component {
     let example = getExampleComponent( sampleResponse, examples, HighlightCode )
 
     return (
-      <div className={"response " + (className || "")}>
+      <div className={ "response " + ( className || "") } data-code={code}>
         <div className="response-col_description">
           <div className="response-item response-code">
-            {code} &nbsp;&ndash;&nbsp; <Markdown source={response.get("description")} />
+            {code} &nbsp;&ndash;&nbsp; <Markdown source={ response.get( "description" ) } />
           </div>
 
-          {example ? (
+          { isOAS3 ?
+            <div className={cx("response-content-type", {
+              "controls-accept-header": controlsAcceptHeader
+            })}>
+              <ContentType
+                  value={this.state.responseContentType}
+                  contentTypes={ response.get("content") ? response.get("content").keySeq() : Seq() }
+                  onChange={this._onContentTypeChange}
+                  />
+                { controlsAcceptHeader ? <small>Controls <code>Accept</code> header.</small> : null }
+            </div>
+             : null }
+
+          { example ? (
             <div className="response-item">
               <ModelExample
-                getComponent={getComponent}
-                getConfigs={getConfigs}
-                specSelectors={specSelectors}
-                schema={fromJSOrdered(schema)}
-                example={example} />
+                specPath={specPathWithPossibleSchema}
+                getComponent={ getComponent }
+                getConfigs={ getConfigs }
+                specSelectors={ specSelectors }
+                schema={ fromJSOrdered(schema) }
+                example={ example }/>
             </div>
           ) : null}
 
-          {headers ? (
+          { headers ? (
             <div className="response-item">
               <Headers
-                headers={headers}
-                getComponent={getComponent}
+                headers={ headers }
+                getComponent={ getComponent }
               />
             </div>
           ) : null}
 
+
+        {specSelectors.isOAS3() ? <div className="response-item">
+          { links ?
+            links.toSeq().map((link, key) => {
+              return <OperationLink key={key} name={key} link={ link } getComponent={getComponent}/>
+            })
+          : <i>No links</i>}
+          </div> : null}
         </div>
       </div>
     )

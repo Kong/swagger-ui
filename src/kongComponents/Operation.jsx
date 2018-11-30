@@ -62,6 +62,7 @@ export default class Operation extends PureComponent {
     let operationProps = this.props.operation
 
     let {
+      har,
       deprecated,
       isShown,
       path,
@@ -88,9 +89,9 @@ export default class Operation extends PureComponent {
     let isShownKey = ["operations", tag, operationId]
     let extensions = getExtensions(operation)
 
-    const Responses = getComponent("responses")
-    const Parameters = getComponent( "parameters" )
-    const Execute = getComponent( "execute" )
+    const KongResponses = getComponent("KongResponses")
+    const KongParameters = getComponent( "KongParameters" )
+    const KongExecute = getComponent( "KongExecute" )
     const Clear = getComponent( "clear" )
     const Markdown = getComponent( "Markdown" )
     const Schemes = getComponent( "schemes" )
@@ -139,7 +140,7 @@ export default class Operation extends PureComponent {
             }
 
             { !operation || !operation.size ? null :
-              <Parameters
+              <KongParameters
                 parameters={parameters}
                 specPath={specPath.push("parameters")}
                 operation={operation}
@@ -185,7 +186,7 @@ export default class Operation extends PureComponent {
             <div className={(!tryItOutEnabled || !response || !allowTryItOut) ? "execute-wrapper" : "btn-group"}>
               { !tryItOutEnabled || !allowTryItOut ? null :
 
-                  <Execute
+                  <KongExecute
                     operation={ operation }
                     specActions={ specActions }
                     specSelectors={ specSelectors }
@@ -207,9 +208,10 @@ export default class Operation extends PureComponent {
           {executeInProgress ? <div className="loading-container"><div className="loading"></div></div> : null}
 
             { !responses ? null :
-                <Responses
+                <KongResponses
                   responses={ responses }
                   request={ request }
+                  har={ har }
                   tryItOutResponse={ response }
                   getComponent={ getComponent }
                   getConfigs={ getConfigs }

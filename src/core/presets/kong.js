@@ -1,28 +1,34 @@
+import KongCurl from "../../kongComponents/curl"
+import KongExecute from "../../kongComponents/execute"
 import KongOperations from "../../kongComponents/Operations"
 import KongOperationContainer from "../../kongComponents/OperationContainer"
 import KongOperation from "../../kongComponents/Operation"
 import KongOperationTag from "../../kongComponents/operation-tag"
 import KongParameters from "../../kongComponents/Parameters"
 import KongParameterRow from "../../kongComponents/Parameter-row"
-import KongModelExample from "../../kongComponents/model-example"
-import KongParamBody from "../../kongComponents/param-body"
-import KongContentType from "../../kongComponents/content-type"
-import KongValidator from "../../kongComponents/online-validator-badge"
+import KongResponses from "../../kongComponents/responses"
+import KongResponse from "../../kongComponents/response"
+import KongResponseBody  from "../../kongComponents/response-body"
+import KongLiveResponse from "../../kongComponents/live-response"
+import KongTryItOutButton from "../../kongComponents/try-it-out-button"
 
 export default function () {
 
   let kongComponents = {
     components: {
+      KongCurl,
+      KongExecute,
       KongOperations,
       KongOperationContainer,
       KongOperation,
       KongOperationTag,
       KongParameters,
       KongParameterRow,
-      KongModelExample,
-      KongParamBody,
-      KongContentType,
-      KongValidator,
+      KongResponses,
+      KongResponse,
+      KongResponseBody,
+      KongLiveResponse,
+      KongTryItOutButton
     }
   }
 

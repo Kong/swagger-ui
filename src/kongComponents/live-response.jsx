@@ -3,10 +3,7 @@ import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { Iterable } from "immutable"
 
-import Curl from "./curl"
-import ResponseBody from "./response-body"
-
-const Headers = ({ headers }) => {
+const Headers = ( { headers } )=>{
   return (
     <div className="headers">
       <p className="white45"><small>Response headers</small></p>
@@ -19,7 +16,7 @@ Headers.propTypes = {
   headers: PropTypes.array.isRequired
 }
 
-const Duration = ({ duration }) => {
+const Duration = ( { duration } ) => {
   return (
     <div>
       <h5>Request duration</h5>
@@ -58,15 +55,17 @@ export default class LiveResponse extends React.Component {
 
     const curlRequest = showMutatedRequest ? specSelectors.mutatedRequestFor(path, method) : specSelectors.requestFor(path, method)
     const status = response.get("status")
-    const url = response.get("url")
+    const url = curlRequest.get("url")
     const headers = response.get("headers").toJS()
     const notDocumented = response.get("notDocumented")
     const isError = response.get("error")
     const body = response.get("text")
     const duration = response.get("duration")
     const headersKeys = Object.keys(headers)
-    const contentType = headers["content-type"]
+    const contentType = headers["content-type"] || headers["Content-Type"]
 
+    const KongCurl = getComponent("KongCurl")
+    const KongResponseBody = getComponent("KongResponseBody")
     const returnObject = headersKeys.map(key => {
       return <span className="headerline" key={key}> {key}: {headers[key]} </span>
     })
@@ -77,7 +76,8 @@ export default class LiveResponse extends React.Component {
         <div className="opblock-section-header">
           <h4>Request</h4>
         </div>
-        {curlRequest && <Curl request={curlRequest} />}
+
+        { curlRequest && <KongCurl request={ curlRequest }/> }
         {url && <div>
           <p className="white45"><small>Request URL</small></p>
           <div className="request-url response-code">
@@ -99,25 +99,25 @@ export default class LiveResponse extends React.Component {
           </div>
 
           <div className="response-item">
-            {/* {
+            {
               isError ? <span>
                 {`${response.get("name")}: ${response.get("message")}`}
               </span>
                 : null
-            } */}
+            }
             {
-              body ? <ResponseBody content={body}
-                contentType={contentType}
-                url={url}
-                headers={headers}
-                getComponent={getComponent} />
+              body ? <KongResponseBody content={ body }
+                  contentType={ contentType }
+                  url={ url }
+                  headers={ headers }
+                  getComponent={ getComponent }/>
                 : null
             }
             {
-              hasHeaders ? <Headers headers={returnObject} /> : null
+              hasHeaders ? <Headers headers={ returnObject }/> : null
             }
             {
-              displayRequestDuration && duration ? <Duration duration={duration} /> : null
+              displayRequestDuration && duration ? <Duration duration={ duration } /> : null
             }
           </div>
 

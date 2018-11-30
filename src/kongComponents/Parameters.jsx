@@ -3,8 +3,7 @@ import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import Im from "immutable"
 
-import ParameterRow from './Parameter-row'
-import TryItOutButton from './try-it-out-button'
+// import ParameterRow from './Parameter-row'
 
 // More readable, just iterate over maps, only
 const eachMap = (iterable, fn) => iterable.valueSeq().filter(Im.Map.isMap).map(fn)
@@ -39,11 +38,11 @@ export default class Parameters extends Component {
 
   onChange = (param, value, isXml) => {
     let {
-      specActions: { changeParam },
+      specActions: { changeParamByIdentity },
       onChangeKey,
     } = this.props
 
-    changeParam(onChangeKey, param.get("name"), param.get("in"), value, isXml)
+    changeParamByIdentity(onChangeKey, param, value, isXml)
   }
 
   onChangeConsumesWrapper = (val) => {
@@ -69,9 +68,12 @@ export default class Parameters extends Component {
       getComponent,
       getConfigs,
       specSelectors,
+      specActions,
       pathMethod
     } = this.props
 
+    const KongParameterRow = getComponent("KongParameterRow")
+    const KongTryItOutButton = getComponent("KongTryItOutButton")
     const isExecute = tryItOutEnabled && allowTryItOut
 
     return (
@@ -81,24 +83,27 @@ export default class Parameters extends Component {
             <h4 className="opblock-title">Parameters</h4>
           </div>
           {allowTryItOut ? (
-            <TryItOutButton enabled={tryItOutEnabled} onCancelClick={onCancelClick} onTryoutClick={onTryoutClick} />
+            <KongTryItOutButton enabled={tryItOutEnabled} onCancelClick={onCancelClick} onTryoutClick={onTryoutClick} />
           ) : null}
         </div>
         {!parameters.count() ? <div className="opblock-description-wrapper"><p>No parameters</p></div> :
           <div className="parameters">
             {
               eachMap(parameters, (parameter, i) => (
-                <ParameterRow fn={fn}
+                <KongParameterRow
+                  fn={ fn }
                   specPath={specPath.push(i.toString())}
-                  getComponent={getComponent}
-                  getConfigs={getConfigs}
-                  param={parameter}
-                  key={`${parameter.get("in")}.${parameter.get("name")}`}
-                  onChange={this.onChange}
+                  getComponent={ getComponent }
+                  getConfigs={ getConfigs }
+                  rawParam={ parameter }
+                  param={ specSelectors.parameterWithMetaByIdentity(pathMethod, parameter) }
+                  key={ `${parameter.get( "in" )}.${parameter.get("name")}` }
+                  onChange={ this.onChange }
                   onChangeConsumes={this.onChangeConsumesWrapper}
-                  specSelectors={specSelectors}
-                  pathMethod={pathMethod}
-                  isExecute={isExecute} />
+                  specSelectors={ specSelectors }
+                  specActions={specActions}
+                  pathMethod={ pathMethod }
+                  isExecute={ isExecute }/>
               )).toArray()
             }
           </div>

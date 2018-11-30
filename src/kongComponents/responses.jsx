@@ -96,11 +96,10 @@ export default class Responses extends React.Component {
                     path={ this.props.path }
                     method={ this.props.method }
                     displayRequestDuration={ displayRequestDuration } />
-                  <h4>Responses</h4>
                 </div>
           }
         {
-            <div className="opblock-section-header light">
+          <div className="opblock-section-header light">
             <h4>Example Request</h4>
           </div>
         }

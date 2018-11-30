@@ -2,6 +2,7 @@ import KongCurl from "../../kongComponents/curl"
 import KongExecute from "../../kongComponents/execute"
 import KongOperations from "../../kongComponents/Operations"
 import KongOperationContainer from "../../kongComponents/OperationContainer"
+import KongOperationSummary from "../../kongComponents/operation-summary"
 import KongOperation from "../../kongComponents/Operation"
 import KongOperationTag from "../../kongComponents/operation-tag"
 import KongParameters from "../../kongComponents/Parameters"
@@ -20,6 +21,7 @@ export default function () {
       KongExecute,
       KongOperations,
       KongOperationContainer,
+      KongOperationSummary,
       KongOperation,
       KongOperationTag,
       KongParameters,

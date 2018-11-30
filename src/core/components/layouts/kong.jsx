@@ -57,31 +57,31 @@ export default class KongLayout extends React.Component {
     return (
       <div>
         <div className="side-panel"></div>
-        <div className='swagger-ui'>
+        <div className="wrapper">
           <SvgAssets />
           <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
-            <Errors/>
+            <div className="col">
+              <Errors/>
 
-            {hasServers || hasSchemes || hasSecurityDefinitions ? (
-              <div className="scheme-container">
-                <div className="col">
-                  {hasServers ? (<ServersContainer />) : null}
-                  {hasSchemes ? (<SchemesContainer />) : null}
-                  {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
-                </div>
-              </div>
-            ) : null}
+              <div className="information-container">
+                {hasSecurityDefinitions ? (<div><AuthorizeBtnContainer /></div>) : null}
 
-            <div className="information-container">
-              <div className="col">
                 <InfoContainer/>
+
+                {hasServers || hasSchemes || hasSecurityDefinitions ? (
+                  <div className="scheme-container">
+                    <div className="col">
+                      {hasServers ? (<ServersContainer />) : null}
+                      {hasSchemes ? (<SchemesContainer />) : null}
+                    </div>
+                  </div>
+                ) : null}
               </div>
+
+              <FilterContainer/>
+
             </div>
-
-            <FilterContainer/>
-
             <KongOperations/>
-
           </VersionPragmaFilter>
         </div>
       </div>

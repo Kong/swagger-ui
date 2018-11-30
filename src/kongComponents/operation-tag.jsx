@@ -54,39 +54,35 @@ export default class OperationTag extends React.Component {
 
     return (
       <div className={showTag ? "opblock-tag-section is-open" : "opblock-tag-section"} >
+        <div className="opblock-details col"></div>
+          <h2
+            className={!tagDescription ? "opblock-tag no-desc" : "opblock-tag" }
+            id={isShownKey.join("-")}>
+            <DeepLink
+              enabled={isDeepLinkingEnabled}
+              isShown={showTag}
+              path={tag}
+              text={tag} />
+          </h2>
 
-        <h4
+          {!tagDescription ? null :
+            <Markdown source={tagDescription} />
+          }
 
-          className={!tagDescription ? "opblock-tag no-desc" : "opblock-tag" }
-          id={isShownKey.join("-")}>
-          <DeepLink
-            enabled={isDeepLinkingEnabled}
-            isShown={showTag}
-            path={tag}
-            text={tag} />
-          { !tagDescription ? <small></small> :
-            <small>
-                <Markdown source={tagDescription} />
-              </small>
-            }
-
-            <div>
-              { !tagExternalDocsDescription ? null :
-                <small>
-                    { tagExternalDocsDescription }
-                      { tagExternalDocsUrl ? ": " : null }
-                      { tagExternalDocsUrl ?
-                        <Link
-                            href={sanitizeUrl(tagExternalDocsUrl)}
-                            onClick={(e) => e.stopPropagation()}
-                            target="_blank"
-                            >{tagExternalDocsUrl}</Link> : null
-                          }
-                  </small>
-                }
-            </div>
-        </h4>
-
+          { !tagExternalDocsDescription ? null :
+           <p className="opblock-ex-description">
+              { tagExternalDocsDescription }
+              { tagExternalDocsUrl ? ": " : null }
+              { tagExternalDocsUrl ?
+                <Link
+                  href={sanitizeUrl(tagExternalDocsUrl)}
+                  onClick={(e) => e.stopPropagation()}
+                  target="_blank">
+                  {tagExternalDocsUrl}
+                </Link> : null
+              }
+            </p>
+          }
         {children}
       </div>
     )

@@ -97,7 +97,7 @@ export default class Operation extends PureComponent {
     const Schemes = getComponent( "schemes" )
     const OperationServers = getComponent( "OperationServers" )
     const OperationExt = getComponent( "OperationExt" )
-    const OperationSummary = getComponent( "OperationSummary" )
+    const KongOperationSummary = getComponent( "KongOperationSummary" )
     const Link = getComponent( "Link" )
 
     const { showExtensions } = getConfigs()
@@ -113,7 +113,7 @@ export default class Operation extends PureComponent {
     return (
       <div className={deprecated ? "opblock opblock-deprecated wrapper" : isShown ? `opblock opblock-${method} is-open wrapper` : `opblock opblock-${method}`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
         <div className="col">
-          <OperationSummary operationProps={operationProps} toggleShown={toggleShown} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
+          <KongOperationSummary operationProps={operationProps} toggleShown={toggleShown} getComponent={getComponent} authActions={authActions} authSelectors={authSelectors} specPath={specPath} />
           <div className="opblock-body">
             { (operation && operation.size) || operation === null ? null :
               <img height={"32px"} width={"32px"} src={require("core/../img/rolling-load.svg")} className="opblock-loading-animation" />
@@ -183,24 +183,26 @@ export default class Operation extends PureComponent {
                 </div> : null
             }
 
-            <div className={(!tryItOutEnabled || !response || !allowTryItOut) ? "execute-wrapper" : "btn-group"}>
-              { !tryItOutEnabled || !allowTryItOut ? null :
+            <div className="wrapper">
+              <div className="col execute-wrapper">
+                { !tryItOutEnabled || !allowTryItOut ? null :
 
-                  <KongExecute
-                    operation={ operation }
-                    specActions={ specActions }
-                    specSelectors={ specSelectors }
-                    path={ path }
-                    method={ method }
-                    onExecute={ onExecute } />
-              }
+                    <KongExecute
+                      operation={ operation }
+                      specActions={ specActions }
+                      specSelectors={ specSelectors }
+                      path={ path }
+                      method={ method }
+                      onExecute={ onExecute } />
+                }
 
-              { (!tryItOutEnabled || !response || !allowTryItOut) ? null :
-                  <Clear
-                    specActions={ specActions }
-                    path={ path }
-                    method={ method }/>
-              }
+                { (!tryItOutEnabled || !response || !allowTryItOut) ? null :
+                    <Clear
+                      specActions={ specActions }
+                      path={ path }
+                      method={ method }/>
+                }
+              </div>
             </div>
           </div>
         </div>

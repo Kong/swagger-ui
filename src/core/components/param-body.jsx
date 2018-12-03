@@ -116,10 +116,8 @@ export default class ParamBody extends PureComponent {
     return (
       <div className="body-param" data-param-name={param.get("name")} data-param-in={param.get("in")}>
         <div className="param-content-type">
-          <label htmlFor="">
-            <span>Parameter content type</span>
-            <ContentType value={ consumesValue } contentTypes={ consumes } onChange={onChangeConsumes} className="body-param-content-type" />
-          </label>
+          <span>Parameter content type</span>
+          <ContentType value={ consumesValue } contentTypes={ consumes } onChange={onChangeConsumes} className="body-param-content-type" />
         </div>
         {
           isEditBox && isExecute

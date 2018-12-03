@@ -108,6 +108,9 @@
           font-size: 15px;
           color: rgba(0, 0, 0, .70);
         }
+        a.tablinks {
+          color: #3b4151
+        }
       }
 
       .body-param, .model-box {
@@ -181,6 +184,19 @@
       }
       .response-content-type {
         padding: 0;
+        margin-top: 1rem;
+
+
+        &.controls-accept-header {
+          select {
+            border-color: $white;
+          }
+
+          small {
+            color: $white;
+            font-size: .7em;
+          }
+        }
       }
     }
     .response-code {

@@ -115,6 +115,10 @@ export default class ParamBody extends PureComponent {
 
     return (
       <div className="body-param" data-param-name={param.get("name")} data-param-in={param.get("in")}>
+        <label htmlFor="">
+          <span>Parameter content type</span>
+          <ContentType value={ consumesValue } contentTypes={ consumes } onChange={onChangeConsumes} className="body-param-content-type" />
+        </label>
         {
           isEditBox && isExecute
             ? <TextArea className={ "body-param__text" + ( errors.count() ? " invalid" : "")} value={value} onChange={ this.handleOnChange }/>
@@ -130,10 +134,7 @@ export default class ParamBody extends PureComponent {
                          </Button>
                          </div>
           }
-          <label htmlFor="">
-            <span>Parameter content type</span>
-            <ContentType value={ consumesValue } contentTypes={ consumes } onChange={onChangeConsumes} className="body-param-content-type" />
-          </label>
+
         </div>
 
       </div>

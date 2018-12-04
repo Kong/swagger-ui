@@ -29,9 +29,10 @@ pre[class*=language-] {
   border-radius: .3em;
   white-space: normal
 }
-
-a.tablinks {
-  color: white
+.responses-wrapper {
+  a.tablinks {
+    color: white
+  }
 }
 
 .model {
@@ -44,7 +45,7 @@ a.tablinks {
 
 .swagger-ui table.model tbody tr td:first-of-type{
   width: 50px !important;
-  padding: 0 !important; 
+  padding: 0 !important;
 }
 
 .swagger-ui {

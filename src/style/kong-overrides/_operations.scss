@@ -101,18 +101,6 @@
         font-weight: 400;
       }
 
-      .parameters-col_description {
-        min-width: 60%;
-        p {
-          margin-bottom: 12px;
-          font-size: 15px;
-          color: rgba(0, 0, 0, .70);
-        }
-        a.tablinks {
-          color: #3b4151
-        }
-      }
-
       .body-param, .model-box {
         background: $lightGry;
         border: 1px solid #E6E6E6;

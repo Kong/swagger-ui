@@ -40,6 +40,31 @@ select {
   }
 }
 
+.parameters-col_description {
+  min-width: 60%;
+  p {
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: rgba(0, 0, 0, .70);
+  }
+  a.tablinks {
+    color: #3b4151
+  }
+  .model-box {
+    .model {
+      color: #3b4151
+    }
+  }
+}
+
+.model-box {
+  padding: 20px;
+}
+
+.model-hint {
+    top: -1.3em;
+}
+
 .code-block {
   min-height: 115px;
   max-width: 45vw;

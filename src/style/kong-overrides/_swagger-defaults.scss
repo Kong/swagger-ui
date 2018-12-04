@@ -97,6 +97,21 @@ select {
   }
 }
 
+section.swagger-ui {
+  padding: 0px;
+}
+
+.body-param-options {
+  .body-param-edit {
+      padding: 10px;
+      border-radius: 0px;
+  }
+}
+
+textarea.body-param__text {
+  margin: 0px;
+}
+
 .swagger-ui .info p, .swagger-ui .info li, .swagger-ui .info table {
   line-height: 1.4;
 }

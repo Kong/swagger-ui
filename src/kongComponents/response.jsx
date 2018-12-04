@@ -173,7 +173,7 @@ export default class Response extends React.Component {
             links.toSeq().map((link, key) => {
               return <OperationLink key={key} name={key} link={ link } getComponent={getComponent}/>
             })
-          : <i>No links</i>}
+          : null}
           </div> : null}
         </div>
       </div>

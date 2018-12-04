@@ -123,7 +123,8 @@
           }
         }
         .body-param__example {
-          margin-top: 1rem;
+          margin: 0px;
+          padding: 20px;
           font-size: 14px;
           background: $lightGry;
           span {
@@ -131,6 +132,8 @@
           }
         }
         .body-param__text {
+          margin: 0px;
+          padding: 20px;
           font-size: 14px;
           background: #fff;
           resize: none;

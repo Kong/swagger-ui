@@ -55,36 +55,33 @@ export default class KongLayout extends React.Component {
     const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
 
     return (
-      <div>
+      <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
+        <SvgAssets />
         <div className="side-panel"></div>
         <div className="wrapper">
-          <SvgAssets />
-          <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
-            <div className="col">
-              <Errors/>
+          <div className="col">
+            <Errors/>
 
-              <div className="information-container">
-                {hasSecurityDefinitions ? (<div><AuthorizeBtnContainer /></div>) : null}
+            <div className="information-container">
+              {hasSecurityDefinitions ? (<div><AuthorizeBtnContainer /></div>) : null}
 
-                <InfoContainer/>
+              <InfoContainer/>
 
-                {hasServers || hasSchemes || hasSecurityDefinitions ? (
-                  <div className="scheme-container">
-                    <div className="col">
-                      {hasServers ? (<ServersContainer />) : null}
-                      {hasSchemes ? (<SchemesContainer />) : null}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-
-              <FilterContainer/>
-
+              {hasServers || hasSchemes || hasSecurityDefinitions ? (
+                <div className="scheme-container">
+                  {hasServers ? (<ServersContainer />) : null}
+                  {hasSchemes ? (<SchemesContainer />) : null}
+                </div>
+              ) : null}
             </div>
-            <KongOperations/>
-          </VersionPragmaFilter>
+
+            <FilterContainer/>
+          </div>
         </div>
-      </div>
+
+        <KongOperations/>
+
+      </VersionPragmaFilter>
       )
   }
 }

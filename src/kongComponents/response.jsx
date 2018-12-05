@@ -83,7 +83,7 @@ export default class Response extends React.Component {
     let links = response.get("links")
     const Headers = getComponent("headers")
     const HighlightCode = getComponent("highlightCode")
-    const ModelExample = getComponent("modelExample")
+    const KongModelExample = getComponent("KongModelExample")
     const Markdown = getComponent( "Markdown" )
     const OperationLink = getComponent("operationLink")
     const ContentType = getComponent("contentType")
@@ -148,7 +148,7 @@ export default class Response extends React.Component {
 
           { example ? (
             <div className="response-item">
-              <ModelExample
+              <KongModelExample
                 specPath={specPathWithPossibleSchema}
                 getComponent={ getComponent }
                 getConfigs={ getConfigs }

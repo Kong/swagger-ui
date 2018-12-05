@@ -12,6 +12,7 @@ import KongResponse from "../../kongComponents/response"
 import KongResponseBody  from "../../kongComponents/response-body"
 import KongLiveResponse from "../../kongComponents/live-response"
 import KongTryItOutButton from "../../kongComponents/try-it-out-button"
+import KongModelExample from "../../kongComponents/model-example"
 
 export default function () {
 
@@ -30,7 +31,8 @@ export default function () {
       KongResponse,
       KongResponseBody,
       KongLiveResponse,
-      KongTryItOutButton
+      KongTryItOutButton,
+      KongModelExample
     }
   }
 

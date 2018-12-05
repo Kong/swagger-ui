@@ -57,6 +57,10 @@ select {
   }
 }
 
+.model-example-wrapper {
+  overflow: scroll;
+}
+
 .model-box {
   padding: 20px;
 }
@@ -67,7 +71,6 @@ select {
 
 .code-block {
   min-height: 115px;
-  max-width: 45vw;
   margin: 0;
   padding: 1rem;
   font-size: 14px;

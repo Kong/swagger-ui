@@ -172,6 +172,9 @@
         margin-bottom: 1rem;
         padding-bottom: 1rem;
         border-bottom: 1px solid rgba(255, 255, 255, .1);
+        h4, h5 {
+          color: $white;
+        }
       }
       .response-content-type {
         padding: 0;

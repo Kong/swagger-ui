@@ -9981,9 +9981,9 @@ swagger-client@^3.8.22:
     utf8-bytes "0.0.1"
     utfstring "^2.0.0"
 
-swagger2har@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/swagger2har/-/swagger2har-0.1.1.tgz#14077c9e3813bf48d4713780b4713396803452e5"
+swagger2har@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/swagger2har/-/swagger2har-0.1.2.tgz#979f4c46ad8012745a87111bdeb3d6506016f8ef"
   dependencies:
     json-schema-instantiator "0.4.4"
     rollup-plugin-babel "^3.0.3"

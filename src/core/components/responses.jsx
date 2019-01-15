@@ -3,9 +3,11 @@ import { fromJS, Iterable } from "immutable"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { defaultStatusCode, getAcceptControllingResponse } from "core/utils"
+import { CodeSnippetWidget } from 'react-apiembed'
 
 export default class Responses extends React.Component {
   static propTypes = {
+    har: PropTypes.object,
     tryItOutResponse: PropTypes.instanceOf(Iterable),
     responses: PropTypes.instanceOf(Iterable).isRequired,
     produces: PropTypes.instanceOf(Iterable),
@@ -37,6 +39,7 @@ export default class Responses extends React.Component {
     || this.props.displayRequestDuration !== nextProps.displayRequestDuration
     || this.props.path !== nextProps.path
     || this.props.method !== nextProps.method
+    || this.props.har !== nextProps.har
     return render
   }
 
@@ -55,6 +58,7 @@ export default class Responses extends React.Component {
 
   render() {
     let {
+      har,
       responses,
       tryItOutResponse,
       getComponent,
@@ -78,66 +82,63 @@ export default class Responses extends React.Component {
     const acceptControllingResponse = isSpecOAS3 ?
       getAcceptControllingResponse(responses) : null
 
+    const snippets = getConfigs().kong.languages
+
     return (
       <div className="responses-wrapper">
-        <div className="opblock-section-header">
-          <h4>Responses</h4>
-            { specSelectors.isOAS3() ? null : <label>
-              <span>Response content type</span>
-              <ContentType value={producesValue}
-                         onChange={this.onChangeProducesWrapper}
-                         contentTypes={produces}
-                         className="execute-content-type"/>
-                     </label> }
-        </div>
-        <div className="responses-inner">
           {
             !tryItOutResponse ? null
-                              : <div>
-                                  <LiveResponse response={ tryItOutResponse }
-                                                getComponent={ getComponent }
-                                                getConfigs={ getConfigs }
-                                                specSelectors={ specSelectors }
-                                                path={ this.props.path }
-                                                method={ this.props.method }
-                                                displayRequestDuration={ displayRequestDuration } />
-                                  <h4>Responses</h4>
-                                </div>
-
+              : <div>
+                  <LiveResponse response={ tryItOutResponse }
+                    getComponent={ getComponent }
+                    getConfigs={ getConfigs }
+                    specSelectors={ specSelectors }
+                    path={ this.props.path }
+                    method={ this.props.method }
+                    displayRequestDuration={ displayRequestDuration } />
+                </div>
           }
+        {
+          <div className="opblock-section-header light">
+            <h4>Example Request</h4>
+          </div>
+        }
+        {
+          <CodeSnippetWidget har={har} snippets={snippets} />
+        }
+        <div className="opblock-section-header light">
+          <h4>Responses</h4>
+          {isSpecOAS3 ? null :
+            <ContentType value={producesValue}
+              onChange={this.onChangeProducesWrapper}
+              contentTypes={produces}
+              className="execute-content-type" />
+          }
+        </div>
+        <div className="responses-inner">
+          <div className="responses-table">
+            {
+              responses.entrySeq().map( ([code, response]) => {
 
-          <table className="responses-table">
-            <thead>
-              <tr className="responses-header">
-                <td className="col col_header response-col_status">Code</td>
-                <td className="col col_header response-col_description">Description</td>
-                { specSelectors.isOAS3() ? <td className="col col_header response-col_links">Links</td> : null }
-              </tr>
-            </thead>
-            <tbody>
-              {
-                responses.entrySeq().map( ([code, response]) => {
-
-                  let className = tryItOutResponse && tryItOutResponse.get("status") == code ? "response_current" : ""
-                  return (
-                    <Response key={ code }
-                              specPath={specPath.push(code)}
-                              isDefault={defaultCode === code}
-                              fn={fn}
-                              className={ className }
-                              code={ code }
-                              response={ response }
-                              specSelectors={ specSelectors }
-                              controlsAcceptHeader={response === acceptControllingResponse}
-                              onContentTypeChange={this.onResponseContentTypeChange}
-                              contentType={ producesValue }
-                              getConfigs={ getConfigs }
-                              getComponent={ getComponent }/>
-                    )
-                }).toArray()
-              }
-            </tbody>
-          </table>
+                let className = tryItOutResponse && tryItOutResponse.get("status") == code ? "response_current" : ""
+                return (
+                  <Response key={ code }
+                    specPath={specPath.push(code)}
+                    isDefault={defaultCode === code}
+                    fn={fn}
+                    className={ className }
+                    code={ code }
+                    response={ response }
+                    specSelectors={ specSelectors }
+                    controlsAcceptHeader={response === acceptControllingResponse}
+                    onContentTypeChange={this.onResponseContentTypeChange}
+                    contentType={ producesValue }
+                    getConfigs={ getConfigs }
+                    getComponent={ getComponent }/>
+                )
+              }).toArray()
+            }
+          </div>
         </div>
       </div>
     )

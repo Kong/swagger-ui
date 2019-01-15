@@ -56,31 +56,31 @@ export default class OperationSummary extends PureComponent {
     const JumpToPath = getComponent("JumpToPath", true)
 
     return (
+      <span>
+        <div className="opblock-summary-description">
+          {!showSummary ? null :
+            <span>{resolvedSummary || summary}</span>
+          }
 
-      <div className={`opblock-summary opblock-summary-${method}`} onClick={toggleShown} >
-        <OperationSummaryMethod method={method} />
-        <OperationSummaryPath getComponent={getComponent} operationProps={operationProps} specPath={specPath} />
+          {displayOperationId && (originalOperationId || operationId) ? <span className="opblock-summary-operation-id">{originalOperationId || operationId}</span> : null}
 
-        {!showSummary ? null :
-          <div className="opblock-summary-description">
-            {resolvedSummary || summary}
-          </div>
-        }
-
-        {displayOperationId && (originalOperationId || operationId) ? <span className="opblock-summary-operation-id">{originalOperationId || operationId}</span> : null}
-
-        {
-          (!security || !security.count()) ? null :
-            <AuthorizeOperationBtn
-              isAuthorized={isAuthorized}
-              onClick={() => {
-                const applicableDefinitions = authSelectors.definitionsForRequirements(security)
-                authActions.showDefinitions(applicableDefinitions)
-              }}
-            />
-        }
-        <JumpToPath path={specPath} />{/* TODO: use wrapComponents here, swagger-ui doesn't care about jumpToPath */}
-      </div>
+          {
+            (!security || !security.count()) ? null :
+              <AuthorizeOperationBtn
+                isAuthorized={isAuthorized}
+                onClick={() => {
+                  const applicableDefinitions = authSelectors.definitionsForRequirements(security)
+                  authActions.showDefinitions(applicableDefinitions)
+                }}
+              />
+          }
+        </div>
+        <div className={`opblock-summary opblock-summary-${method}`} onClick={toggleShown} >
+          <OperationSummaryMethod method={method} />
+          <OperationSummaryPath getComponent={getComponent} operationProps={operationProps} specPath={specPath} />
+          <JumpToPath path={specPath} />{/* TODO: use wrapComponents here, swagger-ui doesn't care about jumpToPath */}
+        </div>
+     </span>
     )
 
   }

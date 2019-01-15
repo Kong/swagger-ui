@@ -23,7 +23,7 @@ export default class StandaloneLayout extends React.Component {
     let Col = getComponent("Col")
     let Errors = getComponent("errors", true)
 
-    const KongLayout = getComponent("KongLayout", true)
+    const BaseLayout = getComponent("BaseLayout", true)
     const OnlineValidatorBadge = getComponent("onlineValidatorBadge", true)
 
     const loadingStatus = specSelectors.loadingStatus()
@@ -56,7 +56,7 @@ export default class StandaloneLayout extends React.Component {
             </div>
           </div>
         }
-        { !loadingStatus || loadingStatus === "success" && <KongLayout /> }
+        { !loadingStatus || loadingStatus === "success" && <BaseLayout /> }
         <Row>
           <Col>
             <OnlineValidatorBadge />

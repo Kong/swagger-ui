@@ -63,7 +63,7 @@ export default class ParameterRow extends Component {
   onChangeWrapper = (value, isXml = false) => {
     let { onChange, rawParam } = this.props
     let valueForUpstream
-    
+
     // Coerce empty strings and empty Immutable objects to null
     if(value === "" || (value && value.size === 0)) {
       valueForUpstream = null
@@ -187,8 +187,8 @@ export default class ParameterRow extends Component {
     }
 
     return (
-      <tr data-param-name={param.get("name")} data-param-in={param.get("in")}>
-        <td className="col parameters-col_name">
+      <div className="wrapper"  data-param-name={param.get("name")} data-param-in={param.get("in")}>
+        <div className="col parameters-col_name text-right">
           <div className={required ? "parameter__name required" : "parameter__name"}>
             {param.get("name")}
             {!required ? null : <span style={{ color: "red" }}>&nbsp;*</span>}
@@ -198,15 +198,15 @@ export default class ParameterRow extends Component {
             { itemType && `[${itemType}]` }
             { format && <span className="prop-format">(${format})</span>}
           </div>
-          <div className="parameter__deprecated">
+           <div className="parameter__deprecated">
             {isOAS3 && isOAS3() && param.get("deprecated") ? "deprecated" : null}
           </div>
           <div className="parameter__in">({ param.get("in") })</div>
           { !showCommonExtensions || !commonExt.size ? null : commonExt.map((v, key) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
           { !showExtensions || !extensions.size ? null : extensions.map((v, key) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
-        </td>
+        </div>
 
-        <td className="col parameters-col_description">
+        <div className="col parameters-col_description">
           { param.get("description") ? <Markdown source={ param.get("description") }/> : null }
 
           { (bodyParam || !isExecute) && isDisplayParamEnum ?
@@ -244,22 +244,22 @@ export default class ParameterRow extends Component {
                                                 specSelectors={ specSelectors }
                                                 schema={ param.get("schema") }
                                                 example={ bodyParam }/>
-              : null
+            : null
           }
 
           {
-            !bodyParam && isExecute ? 
+            !bodyParam && isExecute ?
             <ParameterIncludeEmpty
               onChange={this.onChangeIncludeEmpty}
               isIncluded={specSelectors.parameterInclusionSettingFor(pathMethod, param.get("name"), param.get("in"))}
               isDisabled={value && value.size !== 0}
-              param={param} /> 
+              param={param} />
             : null
           }
 
-        </td>
+        </div>
 
-      </tr>
+      </div >
     )
 
   }

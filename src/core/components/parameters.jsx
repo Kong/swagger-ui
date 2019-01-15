@@ -3,8 +3,6 @@ import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import Im from "immutable"
 
-// import ParameterRow from './Parameter-row'
-
 // More readable, just iterate over maps, only
 const eachMap = (iterable, fn) => iterable.valueSeq().filter(Im.Map.isMap).map(fn)
 
@@ -74,6 +72,7 @@ export default class Parameters extends Component {
 
     const ParameterRow = getComponent("parameterRow")
     const TryItOutButton = getComponent("TryItOutButton")
+
     const isExecute = tryItOutEnabled && allowTryItOut
 
     return (

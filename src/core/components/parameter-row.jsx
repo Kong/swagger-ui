@@ -198,7 +198,7 @@ export default class ParameterRow extends Component {
             { itemType && `[${itemType}]` }
             { format && <span className="prop-format">(${format})</span>}
           </div>
-           <div className="parameter__deprecated">
+          <div className="parameter__deprecated">
             {isOAS3 && isOAS3() && param.get("deprecated") ? "deprecated" : null}
           </div>
           <div className="parameter__in">({ param.get("in") })</div>
@@ -214,7 +214,7 @@ export default class ParameterRow extends Component {
                 "<i>Available values</i> : " + paramEnum.map(function(item) {
                     return item
                   }).toArray().join(", ")}/>
-            : null
+              : null
           }
 
           { (bodyParam || !isExecute) && paramDefaultValue !== undefined ?

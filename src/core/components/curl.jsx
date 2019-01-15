@@ -19,7 +19,7 @@ export default class Curl extends React.Component {
     return (
       <div>
         <div className="copy-paste">
-          <textarea onFocus={this.handleFocus} readOnly="true" className=" code-block" style={{ whiteSpace: "normal" }} value={curl}></textarea>
+          <textarea onFocus={this.handleFocus} readOnly="true" className="code-block" style={{ whiteSpace: "normal" }} value={curl}></textarea>
         </div>
       </div>
     )

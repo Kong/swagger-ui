@@ -150,11 +150,11 @@ export default class ResponseBody extends React.PureComponent {
     }
 
     return ( !bodyEl ? null : <div>
-      <p className="white45"><small>Response body</small></p>
-      <div className="code-block">
-        { bodyEl }
+        <p className="white45"><small>Response body</small></p>
+        <div className="code-block">
+          { bodyEl }
+        </div>
       </div>
-    </div>
     )
   }
 }

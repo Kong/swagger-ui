@@ -131,34 +131,24 @@ class Parameters extends Component {
         </div>
         {this.state.parametersVisible ? <div className="parameters-container">
           { !parameters.count() ? <div className="opblock-description-wrapper"><p>No parameters</p></div> :
-            <div className="table-container">
-              <table className="parameters">
-                <thead>
-                  <tr>
-                    <th className="col col_header parameters-col_name">Name</th>
-                    <th className="col col_header parameters-col_description">Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    eachMap(parameters, (parameter, i) => (
-                      <ParameterRow fn={ fn }
-                        getComponent={ getComponent }
-                        specPath={specPath.push(i)}
-                        getConfigs={ getConfigs }
-                        rawParam={ parameter }
-                        param={ specSelectors.parameterWithMetaByIdentity(pathMethod, parameter) }
-                        key={ parameter.get( "name" ) }
-                        onChange={ this.onChange }
-                        onChangeConsumes={this.onChangeConsumesWrapper}
-                        specSelectors={ specSelectors }
-                        specActions={ specActions }
-                        pathMethod={ pathMethod }
-                        isExecute={ isExecute }/>
-                    )).toArray()
-                  }
-                </tbody>
-              </table>
+            <div className="parameters">
+              {
+                eachMap(parameters, (parameter, i) => (
+                  <ParameterRow fn={ fn }
+                    getComponent={ getComponent }
+                    specPath={specPath.push(i)}
+                    getConfigs={ getConfigs }
+                    rawParam={ parameter }
+                    param={ specSelectors.parameterWithMetaByIdentity(pathMethod, parameter) }
+                    key={ parameter.get( "name" ) }
+                    onChange={ this.onChange }
+                    onChangeConsumes={this.onChangeConsumesWrapper}
+                    specSelectors={ specSelectors }
+                    specActions={ specActions }
+                    pathMethod={ pathMethod }
+                    isExecute={ isExecute }/>
+                )).toArray()
+              }
             </div>
           }
         </div> : "" }

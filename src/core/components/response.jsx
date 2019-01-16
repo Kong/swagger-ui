@@ -12,13 +12,13 @@ const getExampleComponent = ( sampleResponse, examples, HighlightCode ) => {
 
       return (<div key={ key }>
         <h5>{ key }</h5>
-        <HighlightCode className="example" value={ exampleValue } />
+        <HighlightCode className="example code-block" value={ exampleValue } />
       </div>)
     }).toArray()
   }
 
   if ( sampleResponse ) { return <div>
-      <HighlightCode className="example" value={ sampleResponse } />
+      <HighlightCode className="example code-block" value={ sampleResponse } />
     </div>
   }
   return null
@@ -127,14 +127,10 @@ export default class Response extends React.Component {
     let example = getExampleComponent( sampleResponse, examples, HighlightCode )
 
     return (
-      <tr className={ "response " + ( className || "") } data-code={code}>
-        <td className="col response-col_status">
-          { code }
-        </td>
-        <td className="col response-col_description">
-
-          <div className="response-col_description__inner">
-            <Markdown source={ response.get( "description" ) } />
+      <div className={ "response " + ( className || "") } data-code={code}>
+        <div className="response-col_description">
+          <div className="response-item response-code">
+            {code} &nbsp;&ndash;&nbsp; <Markdown source={ response.get( "description" ) } />
           </div>
 
           { isOAS3 ?
@@ -151,32 +147,36 @@ export default class Response extends React.Component {
              : null }
 
           { example ? (
-            <ModelExample
-              specPath={specPathWithPossibleSchema}
-              getComponent={ getComponent }
-              getConfigs={ getConfigs }
-              specSelectors={ specSelectors }
-              schema={ fromJSOrdered(schema) }
-              example={ example }/>
+            <div className="response-item">
+              <ModelExample
+                specPath={specPathWithPossibleSchema}
+                getComponent={ getComponent }
+                getConfigs={ getConfigs }
+                specSelectors={ specSelectors }
+                schema={ fromJSOrdered(schema) }
+                example={ example }/>
+            </div>
           ) : null}
 
           { headers ? (
-            <Headers
-              headers={ headers }
-              getComponent={ getComponent }
-            />
+            <div className="response-item">
+              <Headers
+                headers={ headers }
+                getComponent={ getComponent }
+              />
+            </div>
           ) : null}
 
 
-        </td>
-        {specSelectors.isOAS3() ? <td className="col response-col_links">
+        {specSelectors.isOAS3() ? <div className="response-item">
           { links ?
             links.toSeq().map((link, key) => {
               return <OperationLink key={key} name={key} link={ link } getComponent={getComponent}/>
             })
-          : <i>No links</i>}
-        </td> : null}
-      </tr>
+          : null}
+          </div> : null}
+        </div>
+      </div>
     )
   }
 }

@@ -53,7 +53,7 @@ export default class ModelExample extends React.Component {
           <a className={ "tablinks" + ( isExecute ? " inactive" : "" )} data-name="model" onClick={ this.activeTab }>Model</a>
         </li> : null }
       </ul>
-      <div>
+      <div className="model-example-wrapper">
         {
           this.state.activeTab === "example" && example
         }

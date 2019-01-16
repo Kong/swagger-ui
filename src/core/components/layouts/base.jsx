@@ -19,9 +19,6 @@ export default class BaseLayout extends React.Component {
     let InfoContainer = getComponent("InfoContainer", true)
     let VersionPragmaFilter = getComponent("VersionPragmaFilter")
     let Operations = getComponent("operations", true)
-    let Models = getComponent("Models", true)
-    let Row = getComponent("Row")
-    let Col = getComponent("Col")
     let Errors = getComponent("errors", true)
 
     const ServersContainer = getComponent("ServersContainer", true)
@@ -57,41 +54,33 @@ export default class BaseLayout extends React.Component {
     const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
 
     return (
-
-      <div className='swagger-ui'>
-          <SvgAssets />
-          <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
+      <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
+        <SvgAssets />
+        <div className="side-panel"></div>
+        <div className="wrapper">
+          <div className="col">
             <Errors/>
-            <Row className="information-container">
-              <Col mobile={12}>
-                <InfoContainer/>
-              </Col>
-            </Row>
 
-            {hasServers || hasSchemes || hasSecurityDefinitions ? (
-              <div className="scheme-container">
-                <Col className="schemes wrapper" mobile={12}>
+            <div className="information-container">
+              {hasSecurityDefinitions ? (<div><AuthorizeBtnContainer /></div>) : null}
+
+              <InfoContainer/>
+
+              {hasServers || hasSchemes || hasSecurityDefinitions ? (
+                <div className="scheme-container">
                   {hasServers ? (<ServersContainer />) : null}
                   {hasSchemes ? (<SchemesContainer />) : null}
-                  {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
-                </Col>
-              </div>
-            ) : null}
+                </div>
+              ) : null}
+            </div>
 
             <FilterContainer/>
-
-            <Row>
-              <Col mobile={12} desktop={12} >
-                <Operations/>
-              </Col>
-            </Row>
-            <Row>
-              <Col mobile={12} desktop={12} >
-                <Models/>
-              </Col>
-            </Row>
-          </VersionPragmaFilter>
+          </div>
         </div>
+
+        <Operations/>
+
+      </VersionPragmaFilter>
       )
   }
 }

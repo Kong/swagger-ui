@@ -30,7 +30,7 @@ export default class Execute extends Component {
   render(){
     return (
         <button className="btn execute opblock-control__btn" onClick={ this.onClick }>
-          Execute
+          Make API Call
         </button>
     )
   }

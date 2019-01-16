@@ -5,9 +5,11 @@ import { Iterable } from "immutable"
 
 const Headers = ( { headers } )=>{
   return (
-    <div>
-      <h5>Response headers</h5>
-      <pre>{headers}</pre>
+    <div className="headers">
+      <p className="white45"><small>Response headers</small></p>
+      <div className="code-block">
+        <code>{headers}</code>
+      </div>
     </div>)
 }
 Headers.propTypes = {
@@ -70,59 +72,56 @@ export default class LiveResponse extends React.Component {
     const hasHeaders = returnObject.length !== 0
 
     return (
-      <div>
+      <div className="response-container">
+        <div className="opblock-section-header">
+          <h4>Request</h4>
+        </div>
+
         { curlRequest && <Curl request={ curlRequest }/> }
-        { url && <div>
-            <h4>Request URL</h4>
-            <div className="request-url">
-              <pre>{url}</pre>
-            </div>
+        {url && <div>
+          <p className="white45"><small>Request URL</small></p>
+          <div className="request-url response-code">
+            <pre>{url}</pre>
           </div>
+        </div>
         }
-        <h4>Server response</h4>
-        <table className="responses-table">
-          <thead>
-          <tr className="responses-header">
-            <td className="col col_header response-col_status">Code</td>
-            <td className="col col_header response-col_description">Details</td>
-          </tr>
-          </thead>
-          <tbody>
-            <tr className="response">
-              <td className="col response-col_status">
-                { status }
-                {
-                  notDocumented ? <div className="response-undocumented">
-                                    <i> Undocumented </i>
-                                  </div>
-                                : null
-                }
-              </td>
-              <td className="col response-col_description">
-                {
-                  isError ? <span>
-                              {`${response.get("name")}: ${response.get("message")}`}
-                            </span>
-                          : null
-                }
-                {
-                  body ? <ResponseBody content={ body }
-                                       contentType={ contentType }
-                                       url={ url }
-                                       headers={ headers }
-                                       getComponent={ getComponent }/>
-                       : null
-                }
-                {
-                  hasHeaders ? <Headers headers={ returnObject }/> : null
-                }
-                {
-                  displayRequestDuration && duration ? <Duration duration={ duration } /> : null
-                }
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
+        <h4>Server Response</h4>
+        <div className="response">
+          <div className="response-item response-code">
+            {status}
+            {
+              notDocumented ? <div className="response-undocumented">
+                &nbsp;&ndash;&nbsp;<i> Undocumented </i>
+              </div>
+                : null
+            }
+          </div>
+
+          <div className="response-item">
+            {
+              isError ? <span>
+                {`${response.get("name")}: ${response.get("message")}`}
+              </span>
+                : null
+            }
+            {
+              body ? <ResponseBody content={ body }
+                  contentType={ contentType }
+                  url={ url }
+                  headers={ headers }
+                  getComponent={ getComponent }/>
+                : null
+            }
+            {
+              hasHeaders ? <Headers headers={ returnObject }/> : null
+            }
+            {
+              displayRequestDuration && duration ? <Duration duration={ duration } /> : null
+            }
+          </div>
+
+        </div>
       </div>
     )
   }

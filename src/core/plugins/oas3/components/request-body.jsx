@@ -1,8 +1,8 @@
 import React from "react"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
-import { getSampleSchema } from "core/utils"
-import { Map, OrderedMap } from "immutable"
+import { Map, OrderedMap, List } from "immutable"
+import { getCommonExtensions, getSampleSchema, stringify } from "core/utils"
 
 const RequestBody = ({
   requestBody,
@@ -24,17 +24,20 @@ const RequestBody = ({
   const ModelExample = getComponent("modelExample")
   const RequestBodyEditor = getComponent("RequestBodyEditor")
 
+  const { showCommonExtensions } = getConfigs()
+
   const requestBodyDescription = (requestBody && requestBody.get("description")) || null
   const requestBodyContent = (requestBody && requestBody.get("content")) || new OrderedMap()
-  contentType = contentType || requestBodyContent.keySeq().first()
+  contentType = contentType || requestBodyContent.keySeq().first() || ""
 
-  const mediaTypeValue = requestBodyContent.get(contentType)
+  const mediaTypeValue = requestBodyContent.get(contentType, OrderedMap())
+  const schemaForMediaType = mediaTypeValue.get("schema", OrderedMap())
 
-  const isObjectContent = mediaTypeValue.getIn(["schema", "type"]) === "object"
-
-  if(!mediaTypeValue) {
+  if(!mediaTypeValue.size) {
     return null
   }
+
+  const isObjectContent = mediaTypeValue.getIn(["schema", "type"]) === "object"
 
   if(
     contentType === "application/octet-stream"
@@ -53,28 +56,49 @@ const RequestBody = ({
     return <Input type={"file"} onChange={handleFile} />
   }
 
-  if(
+  if (
     isObjectContent &&
-    (contentType === "application/x-www-form-urlencoded"
-    || contentType.indexOf("multipart/") === 0))
-  {
+    (
+      contentType === "application/x-www-form-urlencoded" ||
+      contentType.indexOf("multipart/") === 0
+    ) &&
+    schemaForMediaType.get("properties", OrderedMap()).size > 0
+  ) {
     const JsonSchemaForm = getComponent("JsonSchemaForm")
-    const HighlightCode = getComponent("highlightCode")
-    const bodyProperties = requestBody.getIn(["content", contentType, "schema", "properties"], OrderedMap())
+    const ParameterExt = getComponent("ParameterExt")
+    const bodyProperties = schemaForMediaType.get("properties", OrderedMap())
     requestBodyValue = Map.isMap(requestBodyValue) ? requestBodyValue : OrderedMap()
 
     return <div className="table-container">
+      { requestBodyDescription &&
+        <Markdown source={requestBodyDescription} />
+      }
       <table>
         <tbody>
           {
             bodyProperties.map((prop, key) => {
-              const required = prop.get("required")
+              let commonExt = showCommonExtensions ? getCommonExtensions(prop) : null
+              const required = schemaForMediaType.get("required", List()).includes(key)
               const type = prop.get("type")
               const format = prop.get("format")
+              const description = prop.get("description")
+              const currentValue = requestBodyValue.get(key)
+              
+              let initialValue = prop.get("default") || prop.get("example") || ""
+
+              if (initialValue === "" && type === "object") {
+                initialValue = getSampleSchema(prop, false, {
+                  includeWriteOnly: true
+                })
+              }
+
+              if (typeof initialValue !== "string" && type === "object") {
+                initialValue = stringify(initialValue)
+              }
 
               const isFile = type === "string" && (format === "binary" || format === "base64")
 
-              return <tr key={key} className="parameters">
+              return <tr key={key} className="parameters" data-property-name={key}>
                 <td className="col parameters-col_name">
                         <div className={required ? "parameter__name required" : "parameter__name"}>
                           { key }
@@ -83,24 +107,25 @@ const RequestBody = ({
                         <div className="parameter__type">
                           { type }
                           { format && <span className="prop-format">(${format})</span>}
+                          {!showCommonExtensions || !commonExt.size ? null : commonExt.map((v, key) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} />)}
                         </div>
                         <div className="parameter__deprecated">
                           { prop.get("deprecated") ? "deprecated": null }
                         </div>
                       </td>
                       <td className="col parameters-col_description">
-                        {isExecute ?
-                        <JsonSchemaForm
+                        <Markdown source={ description }></Markdown>
+                        {isExecute ? <div><JsonSchemaForm
                           fn={fn}
                           dispatchInitialValue={!isFile}
                           schema={prop}
+                          description={key}
                           getComponent={getComponent}
-                          value={requestBodyValue.get(key) || getSampleSchema(prop)}
+                          value={currentValue === undefined ? initialValue : currentValue}
                           onChange={(value) => {
                             onChange(value, [key])
                           }}
-                          />
-                        : <HighlightCode className="example" value={ getSampleSchema(prop) } />}
+                        /></div> : null }
                       </td>
                       </tr>
             })

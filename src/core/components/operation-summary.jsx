@@ -2,6 +2,7 @@ import React, { PureComponent } from "react"
 import PropTypes from "prop-types"
 import { Iterable, List } from "immutable"
 import ImPropTypes from "react-immutable-proptypes"
+import toString from "lodash/toString"
 
 
 export default class OperationSummary extends PureComponent {
@@ -53,6 +54,7 @@ export default class OperationSummary extends PureComponent {
     const AuthorizeOperationBtn = getComponent("authorizeOperationBtn")
     const OperationSummaryMethod = getComponent("OperationSummaryMethod")
     const OperationSummaryPath = getComponent("OperationSummaryPath")
+    const JumpToPath = getComponent("JumpToPath", true)
 
     return (
 
@@ -62,7 +64,7 @@ export default class OperationSummary extends PureComponent {
 
         {!showSummary ? null :
           <div className="opblock-summary-description">
-            {resolvedSummary || summary}
+            {toString(resolvedSummary || summary)}
           </div>
         }
 
@@ -78,6 +80,7 @@ export default class OperationSummary extends PureComponent {
               }}
             />
         }
+        <JumpToPath path={specPath} />{/* TODO: use wrapComponents here, swagger-ui doesn't care about jumpToPath */}
       </div>
     )
 

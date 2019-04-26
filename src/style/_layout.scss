@@ -149,7 +149,7 @@
 
         padding: 10px 20px 0;
 
-        label
+        >label
         {
             font-size: 12px;
             font-weight: bold;
@@ -162,7 +162,7 @@
 
             @include text_headline();
 
-            span
+            >span
             {
                 padding: 0 10px 0 0;
             }
@@ -208,14 +208,43 @@
 
 
         display: flex;
-        flex: 0 3 auto;
         align-items: center;
 
-        word-break: break-all;
+        word-break: break-word;
 
         padding: 0 10px;
 
         @include text_code();
+
+    }
+
+    .opblock-summary-path__deprecated
+    {
+        text-decoration: line-through;
+    }
+
+    .opblock-summary-operation-id
+    {
+        font-size: 14px;
+    }
+
+    .opblock-summary-description
+    {
+        font-size: 13px;
+
+        flex: 1 1 auto;
+
+        word-break: break-word;
+
+        @include text_body();
+    }
+
+    .opblock-summary{
+        display: flex;
+        align-items: center;
+        border: 1px solid;
+        border-radius: 3px;
+        cursor: pointer;
 
         .view-line-link
         {
@@ -239,32 +268,7 @@
         }
     }
 
-    .opblock-summary-path__deprecated
-    {
-        text-decoration: line-through;
-    }
 
-    .opblock-summary-operation-id
-    {
-        font-size: 14px;
-    }
-
-    .opblock-summary-description
-    {
-        font-size: 13px;
-
-        flex: 1;
-
-        @include text_body();
-    }
-
-    .opblock-summary{
-        display: flex;
-        align-items: center;
-        border: 1px solid;
-        border-radius: 3px;
-        cursor: pointer;
-    }
 
     &.opblock-post
     {
@@ -594,7 +598,7 @@
   text-align: center;
   padding: 5px;
   border-radius: 4px;
-  font-family: 'Titillium Web', sans-serif;
+  font-family: sans-serif;
   font-weight: 600;
   color: white;
   font-size: 14px;
@@ -610,7 +614,7 @@
     .schemes
     {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
 
          > label
         {

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import Im from "immutable"
+import Im, { Map } from "immutable"
 import PropTypes from "prop-types"
 
 export default class Models extends Component {
@@ -37,6 +37,7 @@ export default class Models extends Component {
 
     let showModels = layoutSelectors.isShown("models", defaultModelsExpandDepth > 0 && docExpansion !== "none")
     const specPathBase = this.getSchemaBasePath()
+    const isOAS3 = specSelectors.isOAS3()
 
     const ModelWrapper = getComponent("ModelWrapper")
     const Collapse = getComponent("Collapse")
@@ -45,7 +46,7 @@ export default class Models extends Component {
 
     return <section className={ showModels ? "models is-open" : "models"}>
       <h4 onClick={() => layoutActions.show("models", !showModels)}>
-        <span>Models</span>
+        <span>{isOAS3 ? "Schemas" : "Models" }</span>
         <svg width="20" height="20">
           <use xlinkHref={showModels ? "#large-arrow-down" : "#large-arrow"} />
         </svg>
@@ -55,11 +56,16 @@ export default class Models extends Component {
           definitions.entrySeq().map(([name])=>{
 
             const fullPath = [...specPathBase, name]
-            const schema = specSelectors.specResolvedSubtree(fullPath)|| Im.Map()
-            const rawSchema = specSelectors.specJson().getIn(fullPath, Im.Map())
+
+            const schemaValue = specSelectors.specResolvedSubtree(fullPath)
+            const rawSchemaValue = specSelectors.specJson().getIn(fullPath)
+
+            const schema = Map.isMap(schemaValue) ? schemaValue : Im.Map()
+            const rawSchema = Map.isMap(rawSchemaValue) ? rawSchemaValue : Im.Map()
+            
             const displayName = schema.get("title") || rawSchema.get("title") || name
 
-            if(layoutSelectors.isShown(["models", name], false) && schema === undefined) {
+            if(layoutSelectors.isShown(["models", name], false) && (schema.size === 0 && rawSchema.size > 0)) {
               // Firing an action in a container render is not great,
               // but it works for now.
               this.props.specActions.requestResolvedSubtree([...this.getSchemaBasePath(), name])

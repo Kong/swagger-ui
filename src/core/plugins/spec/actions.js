@@ -5,7 +5,7 @@ import serializeError from "serialize-error"
 import isString from "lodash/isString"
 import debounce from "lodash/debounce"
 import set from "lodash/set"
-import { isJSONObject } from "core/utils"
+import { isJSONObject, paramToValue } from "core/utils"
 
 // Actions conform to FSA (flux-standard-actions)
 // {type: string,payload: Any|Error, meta: obj, error: bool}
@@ -14,6 +14,7 @@ export const UPDATE_SPEC = "spec_update_spec"
 export const UPDATE_URL = "spec_update_url"
 export const UPDATE_JSON = "spec_update_json"
 export const UPDATE_PARAM = "spec_update_param"
+export const UPDATE_EMPTY_PARAM_INCLUSION = "spec_update_empty_param_inclusion"
 export const VALIDATE_PARAMS = "spec_validate_param"
 export const SET_RESPONSE = "spec_set_response"
 export const SET_REQUEST = "spec_set_request"
@@ -183,8 +184,11 @@ const debResolveSubtrees = debounce(async () => {
       })
 
       if(errSelectors.allErrors().size) {
-        errActions.clear({
-          type: "thrown"
+        errActions.clearBy(err => {
+          // keep if...
+          return err.get("type") !== "thrown" // it's not a thrown error
+            || err.get("source") !== "resolver" // it's not a resolver error
+            || !err.get("fullPath").every((key, i) => key === path[i] || path[i] === undefined) // it's not within the path we're resolving
         })
       }
 
@@ -224,6 +228,16 @@ const debResolveSubtrees = debounce(async () => {
 }, 35)
 
 export const requestResolvedSubtree = path => system => {
+  // poor-man's array comparison
+  // if this ever inadequate, this should be rewritten to use Im.List
+  const isPathAlreadyBatched = requestBatch
+    .map(arr => arr.join("@@"))
+    .indexOf(path.join("@@")) > -1
+  
+  if(isPathAlreadyBatched) {
+    return
+  }
+
   requestBatch.push(path)
   requestBatch.system = system
   debResolveSubtrees()
@@ -266,6 +280,18 @@ export const validateParams = ( payload, isOAS3 ) =>{
     payload:{
       pathMethod: payload,
       isOAS3
+    }
+  }
+}
+
+export const updateEmptyParamInclusion = ( pathMethod, paramName, paramIn, includeEmptyValue ) =>{
+  return {
+    type: UPDATE_EMPTY_PARAM_INCLUSION,
+    payload:{
+      pathMethod,
+      paramName,
+      paramIn,
+      includeEmptyValue
     }
   }
 }
@@ -327,7 +353,28 @@ export const executeRequest = (req) =>
     let { pathName, method, operation } = req
     let { requestInterceptor, responseInterceptor } = getConfigs()
 
+    
     let op = operation.toJS()
+    
+    // ensure that explicitly-included params are in the request
+
+    if (operation && operation.get("parameters")) {
+      operation.get("parameters")
+        .filter(param => param && param.get("allowEmptyValue") === true)
+        .forEach(param => {
+          if (specSelectors.parameterInclusionSettingFor([pathName, method], param.get("name"), param.get("in"))) {
+            req.parameters = req.parameters || {}
+            const paramValue = paramToValue(param, req.parameters)
+
+            // if the value is falsy or an empty Immutable iterable...
+            if(!paramValue || (paramValue && paramValue.size === 0)) {
+              // set it to empty string, so Swagger Client will treat it as
+              // present but empty.
+              req.parameters[param.get("name")] = ""
+            }
+          }
+        })
+    }
 
     // if url is relative, parseUrl makes it absolute by inferring from `window.location`
     req.contextUrl = parseUrl(specSelectors.url()).toString()

@@ -115,7 +115,11 @@ export default class Servers extends React.Component {
     return (
       <div className="servers">
         <label htmlFor="servers">
-          <select onChange={ this.onServerChange } value={currentServer}>
+          <select 
+            aria-label="available servers" 
+            onChange={ this.onServerChange } 
+            value={currentServer}
+          >
             { servers.valueSeq().map(
               ( server ) =>
               <option
@@ -145,7 +149,7 @@ export default class Servers extends React.Component {
                       <td>{name}</td>
                       <td>
                         { val.get("enum") ?
-                          <select data-variable={name} onChange={this.onServerVariableValueChange}>
+                          <select aria-label="server variables" data-variable={name} onChange={this.onServerVariableValueChange}>
                             {val.get("enum").map(enumValue => {
                               return <option
                                 selected={enumValue === getServerVariable(currentServer, name)}

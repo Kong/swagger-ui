@@ -33,6 +33,7 @@
     "build:es:bundle": "webpack --color --config webpack/es-bundle.babel.js",
     "build:es:bundle:core": "webpack --color --config webpack/es-bundle-core.babel.js",
     "clean": "rimraf ./dist",
+    "build-kong": "npm run build && cp dist/swagger-ui-bundle.js ../kong-portal-templates/workspaces/default/themes/base/assets/js/third-party/swagger-ui-bundle.kong.$(git rev-parse --short HEAD).js",
     "predev": "npm install",
     "dev": "webpack serve --config webpack/dev.babel.js",
     "deps-license": "license-checker --production --csv --out $npm_package_config_deps_check_dir/licenses.csv && license-checker --development --csv --out $npm_package_config_deps_check_dir/licenses-dev.csv",

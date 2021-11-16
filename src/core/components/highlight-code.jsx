@@ -57,17 +57,24 @@ const HighlightCode = ({value, fileName, className, downloadable, getConfigs, ca
         </div>
       )}
 
-      {canSyntaxHighlight
-        ? <SyntaxHighlighter
+      {canSyntaxHighlightc ? (
+        <SyntaxHighlighter
           language={language}
           className={cx(className, "microlight")}
           style={getStyle(get(config, "syntaxHighlight.theme", "agate"))}
         >
           {value}
         </SyntaxHighlighter>
-        : <pre className={cx(className, "microlight")}>{value}</pre>
+       ) : (
+          <pre
+            ref={this.initializeComponent}
+            onWheel={this.preventYScrollingBeyondElement}
+            className={className + " microlight"}
+            tabIndex="0">
+            {value}
+          </pre>
+        )
       }
-
     </div>
   )
 }

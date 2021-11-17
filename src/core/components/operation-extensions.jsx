@@ -6,7 +6,7 @@ export const OperationExt = ({ extensions, getComponent }) => {
     return (
       <div className="opblock-section">
         <div className="opblock-section-header">
-          <h4>Extensions</h4>
+          <h1>Extensions</h1>
         </div>
         <div className="table-container">
 

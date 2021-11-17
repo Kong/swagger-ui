@@ -46,7 +46,7 @@
         border-color: $color;
     }
 
-    .tab-header .tab-item.active h4 span:after
+    .tab-header .tab-item.active h1 span:after
     {
         background: $color;
     }
@@ -183,7 +183,7 @@
             }
             &.active
             {
-                h4
+                h1
                 {
                     span
                     {
@@ -545,7 +545,7 @@
     padding: 20px;
 
     h5,
-    h4
+    h1
     {
         font-size: 12px;
 

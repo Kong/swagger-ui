@@ -125,7 +125,7 @@ export default class Servers extends React.Component {
                 {getEffectiveServerValue(currentServer)}
               </code>
             </div>
-            <h4>Server variables</h4>
+            <h1>Server variables</h1>
             <table>
               <tbody>
                 {

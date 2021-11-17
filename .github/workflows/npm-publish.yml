@@ -15,7 +15,16 @@ jobs:
         with:
           node-version: 12
       - run: npm ci
+      - run: npm run build --if-present
       - run: npm test
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          # Artifact name
+          name: npm_package_dist
+          # A file, directory or wildcard pattern that describes what to upload
+          path: dist/*
+          if-no-files-found: error
 
   publish-npm:
     needs: build
@@ -26,6 +35,10 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - name: Download package artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: npm_package_dist
       - run: npm ci
       - run: npm publish
         env:
@@ -43,6 +56,10 @@ jobs:
         with:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
+      - name: Download package artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: npm_package_dist
       - run: npm ci
       - run: npm publish
         env:

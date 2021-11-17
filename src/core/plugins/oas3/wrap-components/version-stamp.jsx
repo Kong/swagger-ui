@@ -6,7 +6,7 @@ export default OAS3ComponentWrapFactory((props) => {
 
   return <span>
     <Ori {...props} />
-    <small style={{ backgroundColor: "#008000" }}>
+    <small className="oas-version" style={{ backgroundColor: "#89bf04" }}>
       <pre className="version">OAS3</pre>
     </small>
   </span>

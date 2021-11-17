@@ -1,18 +1,9 @@
 {
-  "name": "swagger-ui",
+  "name": "@kong/swagger-ui",
   "version": "3.26.0",
   "main": "dist/swagger-ui.js",
-  "homepage": "https://github.com/swagger-api/swagger-ui",
-  "repository": "git@github.com:swagger-api/swagger-ui.git",
-  "contributors": [
-    "(in alphabetical order)",
-    "Anna Bodnia <anna.bodnia@gmail.com>",
-    "Buu Nguyen <buunguyen@gmail.com>",
-    "Josh Ponelat <jponelat@gmail.com>",
-    "Kyle Shockey <kyleshockey@gmail.com>",
-    "Robert Barnwell <robert@robertismy.name>",
-    "Sahar Jafari <shr.jafari@gmail.com>"
-  ],
+  "homepage": "https://github.com/Kong/swagger-ui",
+  "repository": "git@github.com:Kong/swagger-ui.git",
   "license": "Apache-2.0",
   "scripts": {
     "automated-release": "release-it -VV --config ./release/.release-it.json",

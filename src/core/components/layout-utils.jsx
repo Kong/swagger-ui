@@ -121,9 +121,9 @@ export class Button extends React.Component {
 }
 
 
-export const TextArea = (props) => <textarea {...props} />
+export const TextArea = (props) => <textarea {...props} aria-label={props?.description || ""} />
 
-export const Input = (props) => <input {...props} />
+export const Input = (props) => <input {...props} aria-label={props?.description || ""} />
 
 export class Select extends React.Component {
   static propTypes = {
@@ -134,6 +134,7 @@ export class Select extends React.Component {
     allowEmptyValue: PropTypes.bool,
     className: PropTypes.string,
     disabled: PropTypes.bool,
+    description: PropTypes.string,
   }
 
   static defaultProps = {
@@ -185,11 +186,11 @@ export class Select extends React.Component {
   }
 
   render(){
-    let { allowedValues, multiple, allowEmptyValue, disabled } = this.props
+    let { allowedValues, multiple, allowEmptyValue, disabled, description } = this.props
     let value = this.state.value?.toJS?.() || this.state.value
 
     return (
-      <select className={this.props.className} multiple={ multiple } value={value} onChange={ this.onChange } disabled={disabled} >
+      <select className={this.props.className} multiple={ multiple } value={value} onChange={ this.onChange } disabled={disabled} aria-label={description}>
         { allowEmptyValue ? <option value="">--</option> : null }
         {
           allowedValues.map(function (item, key) {

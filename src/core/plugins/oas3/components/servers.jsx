@@ -145,6 +145,7 @@ export default class Servers extends React.Component {
                             })}
                           </select> :
                           <input
+                            aria-label={`server variable ${name}}`}
                             type={"text"}
                             value={getServerVariable(currentServer, name) || ""}
                             onChange={this.onServerVariableValueChange}

@@ -85,6 +85,7 @@ export class JsonSchema_string extends Component {
                       title={ errors.length ? errors : ""}
                       allowedValues={ enumValue }
                       value={ value }
+                      description={ description }
                       allowEmptyValue={ !required }
                       disabled={disabled}
                       onChange={ this.onEnumChange }/>)
@@ -163,7 +164,7 @@ export class JsonSchema_array extends PureComponent {
   }
 
   render() {
-    let { getComponent, required, schema, errors, fn, disabled } = this.props
+    let { getComponent, required, schema, errors, fn, disabled, description } = this.props
 
     errors = errors.toJS ? errors.toJS() : []
     const value = this.state.value // expect Im List
@@ -193,6 +194,7 @@ export class JsonSchema_array extends PureComponent {
                       title={ errors.length ? errors : ""}
                       multiple={ true }
                       value={ value }
+                      description={ description }
                       disabled={disabled}
                       allowedValues={ schemaItemsEnum }
                       allowEmptyValue={ !required }
@@ -317,7 +319,7 @@ export class JsonSchema_boolean extends Component {
 
   onEnumChange = (val) => this.props.onChange(val)
   render() {
-    let { getComponent, value, errors, schema, required, disabled } = this.props
+    let { getComponent, value, errors, schema, required, disabled, description } = this.props
     errors = errors.toJS ? errors.toJS() : []
     let enumValue = schema && schema.get ? schema.get("enum") : null
     if (!enumValue) {
@@ -329,6 +331,7 @@ export class JsonSchema_boolean extends Component {
     return (<Select className={ errors.length ? "invalid" : ""}
                     title={ errors.length ? errors : ""}
                     value={ String(value) }
+                    description={ description }
                     disabled={ disabled }
                     allowedValues={ enumValue }
                     allowEmptyValue={ !required }

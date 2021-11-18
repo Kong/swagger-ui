@@ -132,27 +132,25 @@ export default class Parameters extends Component {
 
     const retainRequestBodyValueFlagForOperation = (f) => oas3Actions.setRetainRequestBodyValueFlag({ value: f, pathMethod })
     return (
-      <div className="opblock-section">
+      <section className="opblock-section">
         <div className="opblock-section-header">
-          {isOAS3 ? (
-            <div className="tab-header">
-              <div onClick={() => this.toggleTab("parameters")}
-                   className={`tab-item ${this.state.parametersVisible && "active"}`}>
-                <h4 className="opblock-title"><span>Parameters</span></h4>
+          { isOAS3 ? (
+          <div className="tab-header">
+              <div onClick={() => this.toggleTab("parameters")} className={`tab-item ${this.state.parametersVisible && "active"}`}>
+                <h1 className="opblock-title"><span>Parameters</span></h1>
               </div>
               {operation.get("callbacks") ?
                 (
-                  <div onClick={() => this.toggleTab("callbacks")}
-                       className={`tab-item ${this.state.callbackVisible && "active"}`}>
-                    <h4 className="opblock-title"><span>Callbacks</span></h4>
+                  <div onClick={() => this.toggleTab("callbacks")} className={`tab-item ${this.state.callbackVisible && "active"}`}>
+                    <h1 className="opblock-title"><span>Callbacks</span></h1>
                   </div>
                 ) : null
               }
             </div>
           ) : (
             <div className="tab-header">
-              <h4 className="opblock-title">Parameters</h4>
-            </div>
+            <h1 className="opblock-title">Parameters</h1>
+          </div>
           )}
           {allowTryItOut ? (
             <TryItOutButton
@@ -271,7 +269,7 @@ export default class Parameters extends Component {
             </div>
           </div>
         }
-      </div>
+      </section>
     )
   }
 }

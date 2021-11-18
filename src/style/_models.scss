@@ -175,14 +175,14 @@ section.models
     &.is-open
     {
         padding: 0 0 20px;
-        h4
+        h1
         {
             margin: 0 0 5px 0;
 
-            border-bottom: 1px solid rgba($section-models-isopen-h4-border-bottom-color, .3);
+            border-bottom: 1px solid rgba($section-models-isopen-h1-border-bottom-color, .3);
         }
     }
-    h4
+    h1
     {
         font-size: 16px;
 
@@ -195,7 +195,7 @@ section.models
         cursor: pointer;
         transition: all .2s;
 
-        @include text_headline($section-models-h4-font-color);
+        @include text_headline($section-models-h1-font-color);
 
         svg
         {
@@ -209,7 +209,7 @@ section.models
 
         &:hover
         {
-            background: rgba($section-models-h4-background-color-hover,.02);
+            background: rgba($section-models-h1-background-color-hover,.02);
         }
     }
 

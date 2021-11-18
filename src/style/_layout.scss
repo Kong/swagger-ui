@@ -56,7 +56,7 @@
         border-color: $color;
     }
 
-    .tab-header .tab-item.active h4 span:after
+    .tab-header .tab-item.active h1 span:after
     {
         background: $color;
     }
@@ -205,7 +205,7 @@
             }
             &.active
             {
-                h4
+                h1
                 {
                     span
                     {
@@ -224,7 +224,7 @@
                             content: '';
                             transform: translateX(-50%);
 
-                            background: $opblock-tab-header-tab-item-active-h4-span-after-background-color;
+                            background: $opblock-tab-header-tab-item-active-h1-span-after-background-color;
                         }
                     }
                 }
@@ -272,7 +272,7 @@
             }
         }
 
-        h4
+        h1
         {
             font-size: 14px;
 
@@ -534,7 +534,7 @@
 
     @include text_body();
 
-    h4
+    h1
     {
         font-size: 12px;
 
@@ -554,7 +554,7 @@
 }
 
 .opblock-external-docs-wrapper {
-  h4 {
+  h1 {
     padding-left: 0px;
   }
 }
@@ -597,7 +597,7 @@
     padding: 20px;
 
     h5,
-    h4
+    h1
     {
         font-size: 12px;
 

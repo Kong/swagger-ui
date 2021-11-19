@@ -209,8 +209,7 @@ export default class Parameters extends Component {
           isOAS3 && requestBody && this.state.parametersVisible &&
           <div className="opblock-section opblock-section-request-body">
             <div className="opblock-section-header">
-              <h4 className={`opblock-title parameter__name ${requestBody.get("required") && "required"}`}>Request
-                body</h4>
+              <h1 className={`opblock-title parameter__name ${requestBody.get("required") && "required"}`}>Request body</h1>
               <label>
                 <ContentType
                   value={oas3Selectors.requestContentType(...pathMethod)}

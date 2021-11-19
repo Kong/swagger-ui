@@ -12,10 +12,10 @@ const Callbacks = (props) => {
     return <span>No callbacks</span>
   }
 
-  let callbackElements = callbacks.entrySeq().map(([callbackName, callback]) => {
-    return <div key={callbackName}>
-      <h2>{callbackName}</h2>
-      { callback.entrySeq().map(([pathItemName, pathItem]) => {
+  let callbackElements = callbacks.map((callback, callbackName) => {
+    return <section key={callbackName}>
+      <h1>{callbackName}</h1>
+      { callback.map((pathItem, pathItemName) => {
         if(pathItemName === "$$ref") {
           return null
         }
@@ -40,7 +40,7 @@ const Callbacks = (props) => {
           }) }
         </div>
       }) }
-    </div>
+    </section>
   })
   return <div>
     {callbackElements}

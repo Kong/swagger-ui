@@ -111,19 +111,11 @@ export default class OperationTag extends React.Component {
             title={showTag ? "Collapse operation" : "Expand operation"}
             onClick={() => layoutActions.show(isShownKey, !showTag)}>
 
-<<<<<<< HEAD
-            <svg className="arrow" width="20" height="20" aria-hidden="true" focusable="false">
-              <use href={showTag ? "#large-arrow-up" : "#large-arrow-down"} xlinkHref={showTag ? "#large-arrow-up" : "#large-arrow-down"} />
-            </svg>
-          </button>
-        </h3>
-=======
               <svg className="arrow" width="20" height="20">
                 <use href={showTag ? "#large-arrow-down" : "#large-arrow"} xlinkHref={showTag ? "#large-arrow-down" : "#large-arrow"} />
               </svg>
             </button>
         </h1>
->>>>>>> 5b51f632 (fix(a11y) heading level a11y [TDX-1618] (#20))
 
         <Collapse isOpened={showTag}>
           {children}

@@ -62,8 +62,8 @@ const HighlightCode = ({value, fileName, className, downloadable, getConfigs, ca
           language={language}
           className={cx(className, "microlight")}
           style={getStyle(get(config, "syntaxHighlight.theme", "agate"))}
-        >
-          {value}
+        > 
+        {value}
         </SyntaxHighlighter>
        ) : (
           <pre

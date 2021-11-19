@@ -36,25 +36,27 @@ export default class Errors extends React.Component {
     let sortedJSErrors = allErrorsToDisplay.sortBy(err => err.get("line"))
 
     return (
-      <pre className="errors-wrapper">
-        <hgroup className="error">
-          <h4 className="errors__title">Errors</h4>
-          <button className="btn errors__clear-btn" onClick={ toggleVisibility }>{ isVisible ? "Hide" : "Show" }</button>
-        </hgroup>
-        <Collapse isOpened={ isVisible } animated >
-          <div className="errors">
-            { sortedJSErrors.map((err, i) => {
-              let type = err.get("type")
-              if(type === "thrown" || type === "auth") {
-                return <ThrownErrorItem key={ i } error={ err.get("error") || err } jumpToLine={jumpToLine} />
-              }
-              if(type === "spec") {
-                return <SpecErrorItem key={ i } error={ err } jumpToLine={jumpToLine} />
-              }
-            }) }
-          </div>
-        </Collapse>
-      </pre>
+      <section>
+        <pre className="errors-wrapper">
+          <hgroup className="error">
+            <h1 className="errors__title">Errors</h1>
+            <button className="btn errors__clear-btn" onClick={ toggleVisibility }>{ isVisible ? "Hide" : "Show" }</button>
+          </hgroup>
+          <Collapse isOpened={ isVisible } animated >
+            <div className="errors">
+              { sortedJSErrors.map((err, i) => {
+                let type = err.get("type")
+                if(type === "thrown" || type === "auth") {
+                  return <ThrownErrorItem key={ i } error={ err.get("error") || err } jumpToLine={jumpToLine} />
+                }
+                if(type === "spec") {
+                  return <SpecErrorItem key={ i } error={ err } jumpToLine={jumpToLine} />
+                }
+              }) }
+            </div>
+          </Collapse>
+        </pre>
+      </section>
       )
     }
 }
@@ -69,9 +71,9 @@ const ThrownErrorItem = ( { error, jumpToLine } ) => {
     <div className="error-wrapper">
       { !error ? null :
         <div>
-          <h4>{ (error.get("source") && error.get("level")) ?
+          <p className="error-source">{ (error.get("source") && error.get("level")) ?
             toTitleCase(error.get("source")) + " " + error.get("level") : "" }
-          { error.get("path") ? <small> at {error.get("path")}</small>: null }</h4>
+          { error.get("path") ? <small> at {error.get("path")}</small>: null }</p>
           <span style={{ whiteSpace: "pre-line", "maxWidth": "100%" }}>
             { error.get("message") }
           </span>
@@ -101,7 +103,7 @@ const SpecErrorItem = ( { error, jumpToLine } ) => {
     <div className="error-wrapper">
       { !error ? null :
         <div>
-          <h4>{ toTitleCase(error.get("source")) + " " + error.get("level") }&nbsp;{ locationMessage }</h4>
+          <p className="error-source">{ toTitleCase(error.get("source")) + " " + error.get("level") }&nbsp;{ locationMessage }</p>
           <span style={{ whiteSpace: "pre-line"}}>{ error.get("message") }</span>
           <div style={{ "text-decoration": "underline", "cursor": "pointer" }}>
             { jumpToLine ? (

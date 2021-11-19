@@ -13,8 +13,8 @@ const Callbacks = (props) => {
   }
 
   let callbackElements = callbacks.map((callback, callbackName) => {
-    return <div key={callbackName}>
-      <h2>{callbackName}</h2>
+    return <section key={callbackName}>
+      <h1>{callbackName}</h1>
       { callback.map((pathItem, pathItemName) => {
         if(pathItemName === "$$ref") {
           return null
@@ -40,7 +40,7 @@ const Callbacks = (props) => {
           }) }
         </div>
       }) }
-    </div>
+    </section>
   })
   return <div>
     {callbackElements}

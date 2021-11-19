@@ -39,6 +39,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: npm_package_dist
+          path: dist
       - run: npm ci
       - run: npm publish
         env:
@@ -60,6 +61,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: npm_package_dist
+          path: dist
       - run: npm ci
       - run: npm publish
         env:

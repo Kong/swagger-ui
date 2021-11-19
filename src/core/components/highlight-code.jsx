@@ -53,7 +53,7 @@ export default class HighlightCode extends Component {
     return (
       <div className="highlight-code">
         { !downloadable ? null :
-          <div className="download-contents" onClick={this.downloadText}>
+          <div className="download-contents" onClick={this.downloadText} role="button" aria-label="download contents">
             Download
           </div>
         }

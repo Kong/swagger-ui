@@ -108,6 +108,7 @@ export class JsonSchema_string extends Component {
           type={format && format === "password" ? "password" : "text"}
           className={errors.length ? "invalid" : ""}
           title={errors.length ? errors : ""}
+          aria-label={description}
           value={value}
           minLength={0}
           debounceTimeout={350}

@@ -10,6 +10,7 @@ export default class RequestBodyEditor extends PureComponent {
     onChange: PropTypes.func,
     getComponent: PropTypes.func.isRequired,
     value: PropTypes.string,
+    description: PropTypes.description,
     defaultValue: PropTypes.string,
   };
 
@@ -74,7 +75,8 @@ export default class RequestBodyEditor extends PureComponent {
 
   render() {
     let {
-      getComponent
+      getComponent,
+      description
     } = this.props
 
     let {
@@ -88,6 +90,7 @@ export default class RequestBodyEditor extends PureComponent {
         <TextArea
           className={"body-param__text"}
           value={value}
+          description={`Body param for ${description}`}
           onChange={ this.onDomChange }
         />
       </div>

@@ -208,6 +208,7 @@ const RequestBody = ({
       isExecute ? (
         <div>
           <RequestBodyEditor
+            description={requestBodyDescription}
             value={requestBodyValue}
             defaultValue={getDefaultRequestBodyValue(
               requestBody,

@@ -220,12 +220,14 @@ export class JsonSchema_array extends PureComponent {
                     onChange={(val)=> this.onItemChange(val, i)}
                     disabled={disabled}
                     errors={errors}
+                    description={`${description} #${i}`}
                     getComponent={getComponent}
                     />
                     : isArrayItemText ?
                       <JsonSchemaArrayItemText
                         value={item}
                         onChange={(val) => this.onItemChange(val, i)}
+                        description={`${description} #${i}`}
                         disabled={disabled}
                         errors={errors}
                       />
@@ -286,6 +288,7 @@ export class JsonSchemaArrayItemText extends Component {
       value={value}
       minLength={0}
       debounceTimeout={350}
+      aria-label={description}
       placeholder={description}
       onChange={this.onChange}
       disabled={disabled} />)
@@ -302,13 +305,14 @@ export class JsonSchemaArrayItemFile extends Component {
   }
 
   render() {
-    let { getComponent, errors, disabled } = this.props
+    let { getComponent, errors, disabled, description } = this.props
     const Input = getComponent("Input")
     const isDisabled = disabled || !("FormData" in window)
 
     return (<Input type="file"
       className={errors.length ? "invalid" : ""}
       title={errors.length ? errors : ""}
+      aria-label={description}
       onChange={this.onFileChange}
       disabled={isDisabled} />)
   }

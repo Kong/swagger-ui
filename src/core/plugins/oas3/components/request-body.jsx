@@ -271,6 +271,7 @@ const RequestBody = ({
       isExecute ? (
         <div>
           <RequestBodyEditor
+            description={requestBodyDescription}
             value={requestBodyValue}
             errors={requestBodyErrors}
             defaultValue={sampleRequestBody}

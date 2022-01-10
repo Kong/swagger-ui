@@ -25,6 +25,18 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: dist/*
           if-no-files-found: error
+      - name: Commit files
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+        run: |
+          date > generated.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "publish new dist 🎉 "
+          git push
 
   publish-npm:
     needs: build

@@ -26,10 +26,6 @@ jobs:
           path: dist/*
           if-no-files-found: error
       - name: Commit files
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
-          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
         run: |
           date > generated.txt
           git config user.name github-actions

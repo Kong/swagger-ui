@@ -36,7 +36,7 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "publish new dist 🎉 "
-          git push}}
+          git push
           branch: ${{ github.ref }}
 
   publish-npm:

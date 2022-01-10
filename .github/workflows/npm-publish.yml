@@ -37,7 +37,6 @@ jobs:
           git add .
           git commit -m "publish new dist 🎉 "
           git push
-          branch: ${{ github.ref }}
 
   publish-npm:
     needs: build

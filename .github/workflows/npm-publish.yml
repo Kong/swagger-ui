@@ -27,12 +27,11 @@ jobs:
           if-no-files-found: error
       - name: Commit files
         run: |
-          date > generated.txt
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
           git commit -m "publish new dist 🎉 "
-          git push
+          git push origin HEAD:main
 
   publish-npm:
     needs: build

@@ -4,7 +4,7 @@ import { List, fromJS } from "immutable"
 import cx from "classnames"
 import ImPropTypes from "react-immutable-proptypes"
 import DebounceInput from "react-debounce-input"
-import { stringify } from "core/utils"
+import { stringify, getSampleSchema } from "core/utils"
 //import "less/json-schema-form"
 
 const noop = ()=> {}
@@ -40,6 +40,8 @@ export class JsonSchemaForm extends Component {
     const { dispatchInitialValue, value, onChange } = this.props
     if(dispatchInitialValue) {
       onChange(value)
+    } else if(dispatchInitialValue === false) {
+      onChange("")
     }
   }
 
@@ -127,12 +129,16 @@ export class JsonSchema_array extends PureComponent {
 
   constructor(props, context) {
     super(props, context)
-    this.state = { value: valueOrEmptyList(props.value) }
+    this.state = { value: valueOrEmptyList(props.value), schema: props.schema}
   }
 
-  componentWillReceiveProps(props) {
-    if(props.value !== this.state.value)
-      this.setState({ value: props.value })
+  UNSAFE_componentWillReceiveProps(props) {
+    const value = valueOrEmptyList(props.value)
+    if(value !== this.state.value)
+      this.setState({ value })
+
+    if(props.schema !== this.state.schema)
+      this.setState({ schema: props.schema })
   }
 
   onChange = () => {
@@ -150,11 +156,13 @@ export class JsonSchema_array extends PureComponent {
       value: value.delete(i)
     }), this.onChange)
   }
- 
+
   addItem = () => {
     let newValue = valueOrEmptyList(this.state.value)
     this.setState(() => ({
-      value: newValue.push("")
+      value: newValue.push(getSampleSchema(this.state.schema.get("items"), false, {
+        includeWriteOnly: true
+      }))
     }), this.onChange)
   }
 
@@ -167,14 +175,17 @@ export class JsonSchema_array extends PureComponent {
   render() {
     let { getComponent, required, schema, errors, fn, disabled, description } = this.props
 
-    errors = errors.toJS ? errors.toJS() : []
+    errors = errors.toJS ? errors.toJS() : Array.isArray(errors) ? errors : []
+    const arrayErrors = errors.filter(e => typeof e === "string")
+    const needsRemoveError = errors.filter(e => e.needRemove !== undefined)
+      .map(e => e.error)
     const value = this.state.value // expect Im List
     const shouldRenderValue =
       value && value.count && value.count() > 0 ? true : false
     const schemaItemsEnum = schema.getIn(["items", "enum"])
     const schemaItemsType = schema.getIn(["items", "type"])
     const schemaItemsFormat = schema.getIn(["items", "format"])
-    const schemaItemsSchema = schema.getIn(["items", "schema"])
+    const schemaItemsSchema = schema.get("items")
     let ArrayItemsComponent
     let isArrayItemText = false
     let isArrayItemFile = (schemaItemsType === "file" || (schemaItemsType === "string" && schemaItemsFormat === "binary")) ? true : false
@@ -207,10 +218,10 @@ export class JsonSchema_array extends PureComponent {
       <div className="json-schema-array">
         {shouldRenderValue ?
           (value.map((item, i) => {
-            if (errors.length) {
-              let err = errors.filter((err) => err.index === i)
-              if (err.length) errors = [err[0].error + i]
-            }
+            const itemErrors = fromJS([
+              ...errors.filter((err) => err.index === i)
+              .map(e => e.error)
+            ])
             return (
               <div key={i} className="json-schema-form-item">
                 {
@@ -229,13 +240,13 @@ export class JsonSchema_array extends PureComponent {
                         onChange={(val) => this.onItemChange(val, i)}
                         description={`${description} #${i}`}
                         disabled={disabled}
-                        errors={errors}
+                        errors={itemErrors}
                       />
                       : <ArrayItemsComponent {...this.props}
                         value={item}
                         onChange={(val) => this.onItemChange(val, i)}
                         disabled={disabled}
-                        errors={errors}
+                        errors={itemErrors}
                         schema={schemaItemsSchema}
                         getComponent={getComponent}
                         fn={fn}
@@ -243,7 +254,9 @@ export class JsonSchema_array extends PureComponent {
                 }
                 {!disabled ? (
                   <Button
-                    className="btn btn-sm json-schema-form-item-remove"
+                    className={`btn btn-sm json-schema-form-item-remove ${needsRemoveError.length ? "invalid" : null}`}
+                    title={needsRemoveError.length ? needsRemoveError : ""}
+
                     onClick={() => this.removeItem(i)}
                   > - </Button>
                 ) : null}
@@ -254,10 +267,11 @@ export class JsonSchema_array extends PureComponent {
         }
         {!disabled ? (
           <Button
-            className={`btn btn-sm json-schema-form-item-add ${errors.length ? "invalid" : null}`}
+            className={`btn btn-sm json-schema-form-item-add ${arrayErrors.length ? "invalid" : null}`}
+            title={arrayErrors.length ? arrayErrors : ""}
             onClick={this.addItem}
           >
-            Add item
+            Add {schemaItemsType ? `${schemaItemsType} ` : ""}item
           </Button>
         ) : null}
       </div>
@@ -327,10 +341,8 @@ export class JsonSchema_boolean extends Component {
     let { getComponent, value, errors, schema, required, disabled, description } = this.props
     errors = errors.toJS ? errors.toJS() : []
     let enumValue = schema && schema.get ? schema.get("enum") : null
-    if (!enumValue) {
-      // in case schema.get() also returns undefined/null
-      enumValue = fromJS(["true", "false"])
-    }
+    let allowEmptyValue = !enumValue || !required
+    let booleanValue = !enumValue && fromJS(["true", "false"])
     const Select = getComponent("Select")
 
     return (<Select className={ errors.length ? "invalid" : ""}
@@ -338,10 +350,35 @@ export class JsonSchema_boolean extends Component {
                     value={ String(value) }
                     description={ description }
                     disabled={ disabled }
-                    allowedValues={ enumValue }
-                    allowEmptyValue={ !required }
+                    allowedValues={ enumValue || booleanValue }
+                    allowEmptyValue={ allowEmptyValue }
                     onChange={ this.onEnumChange }/>)
   }
+}
+
+const stringifyObjectErrors = (errors) => {
+  return errors.map(err => {
+    const meta = err.propKey !== undefined ? err.propKey : err.index
+    let stringError = typeof err === "string" ? err : typeof err.error === "string" ? err.error : null
+
+    if(!meta && stringError) {
+      return stringError
+    }
+    let currentError = err.error
+    let path = `/${err.propKey}`
+    while(typeof currentError === "object") {
+      const part = currentError.propKey !== undefined ? currentError.propKey : currentError.index
+      if(part === undefined) {
+        break
+      }
+      path += `/${part}`
+      if (!currentError.error) {
+        break
+      }
+      currentError = currentError.error
+    }
+    return `${path}: ${currentError}`
+  })
 }
 
 export class JsonSchema_object extends PureComponent {
@@ -371,21 +408,21 @@ export class JsonSchema_object extends PureComponent {
     } = this.props
 
     const TextArea = getComponent("TextArea")
+    errors = errors.toJS ? errors.toJS() : Array.isArray(errors) ? errors : []
 
     return (
       <div>
         <TextArea
-          className={cx({ invalid: errors.size })}
-          title={ errors.size ? errors.join(", ") : ""}
+          className={cx({ invalid: errors.length })}
+          title={ errors.length ? stringifyObjectErrors(errors).join(", ") : ""}
           value={stringify(value)}
           disabled={disabled}
           onChange={ this.handleOnChange }/>
       </div>
     )
-
   }
 }
 
 function valueOrEmptyList(value) {
-  return List.isList(value) ? value : List()
+  return List.isList(value) ? value : Array.isArray(value) ? fromJS(value) : List()
 }

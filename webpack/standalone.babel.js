@@ -16,7 +16,11 @@ const result = configBuilder(
     },
 
     output: {
-      library: "SwaggerUIStandalonePreset",
+      globalObject: "this",
+      library: {
+        name: "SwaggerUIStandalonePreset",
+        export: "default",
+      },
     },
   }
 )

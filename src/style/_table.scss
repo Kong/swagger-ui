@@ -38,6 +38,12 @@ table
 
             @include text_code();
         }
+
+        .header-example 
+        {
+            color: #999; 
+            font-style: italic;
+        }
     }
 
     tbody
@@ -52,7 +58,6 @@ table
 
                 &:first-of-type
                 {
-                    max-width: 20%;
                     min-width: 6em;
                     padding: 10px 0;
                 }
@@ -111,6 +116,11 @@ table
     &.required
     {
         font-weight: bold;
+
+        span
+        {
+            color: red;
+        }
 
         &:after
         {
@@ -173,4 +183,12 @@ table
 
 .response-col_links {
     min-width: 6em;
+}
+
+.response__extension
+{
+    font-size: 12px;
+    font-style: italic;
+
+    @include text_code($table-parameter-in-font-color);
 }

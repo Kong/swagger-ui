@@ -51,7 +51,7 @@ export default class HttpAuth extends React.Component {
     const Row = getComponent("Row")
     const Col = getComponent("Col")
     const AuthError = getComponent("authError")
-    const Markdown = getComponent( "Markdown" )
+    const Markdown = getComponent("Markdown", true)
     const JumpToPath = getComponent("JumpToPath", true)
 
     const scheme = (schema.get("scheme") || "").toLowerCase()
@@ -74,7 +74,7 @@ export default class HttpAuth extends React.Component {
           <label>Username:</label>
           {
             username ? <code> { username } </code>
-                     : <Col><Input type="text" required="required" name="username" onChange={ this.onChange }/></Col>
+              : <Col><Input type="text" required="required" name="username" aria-label="auth-basic-username" onChange={ this.onChange } autoFocus/></Col>
           }
         </Row>
         <Row>
@@ -84,6 +84,7 @@ export default class HttpAuth extends React.Component {
                        : <Col><Input autoComplete="new-password"
                                      name="password"
                                      type="password"
+                                     aria-label="auth-basic-password"
                                      onChange={ this.onChange }/></Col>
             }
         </Row>
@@ -112,7 +113,7 @@ export default class HttpAuth extends React.Component {
               <label>Value:</label>
               {
                 value ? <code> ****** </code>
-              : <Col><Input type="text" onChange={ this.onChange }/></Col>
+              : <Col><Input type="text" aria-label="auth-bearer-value" onChange={ this.onChange } autoFocus/></Col>
           }
         </Row>
         {

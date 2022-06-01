@@ -36,7 +36,7 @@ export default class BaseLayout extends React.Component {
     const loadingStatus = specSelectors.loadingStatus()
 
     let loadingMessage = null
-  
+
     if(loadingStatus === "loading") {
       loadingMessage = <div className="info">
         <div className="loading-container">
@@ -57,7 +57,7 @@ export default class BaseLayout extends React.Component {
     if (loadingStatus === "failedConfig") {
       const lastErr = errSelectors.lastError()
       const lastErrMsg = lastErr ? lastErr.get("message") : ""
-      loadingMessage = <div className="info" style={{ maxWidth: "880px", marginLeft: "auto", marginRight: "auto", textAlign: "center" }}>
+      loadingMessage = <div className="info failed-config">
         <div className="loading-container">
           <h4 className="title">Failed to load remote configuration.</h4>
           <p>{lastErrMsg}</p>
@@ -85,41 +85,40 @@ export default class BaseLayout extends React.Component {
     const hasSecurityDefinitions = !!specSelectors.securityDefinitions()
 
     return (
-
       <div className='swagger-ui'>
-          <SvgAssets />
-          <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
-            <Errors/>
-            <Row className="information-container">
-              <Col mobile={12}>
-                <InfoContainer/>
-              </Col>
-            </Row>
+        <SvgAssets />
+        <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
+          <Errors/>
+          <Row className="information-container">
+            <Col mobile={12}>
+              <InfoContainer/>
+            </Col>
+          </Row>
 
-            {hasServers || hasSchemes || hasSecurityDefinitions ? (
-              <div className="scheme-container">
-                <Col className="schemes wrapper" mobile={12}>
-                  {hasServers ? (<ServersContainer />) : null}
-                  {hasSchemes ? (<SchemesContainer />) : null}
-                  {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
-                </Col>
-              </div>
-            ) : null}
-
-            <FilterContainer/>
-
-            <Row>
-              <Col mobile={12} desktop={12} >
-                <Operations/>
+          {hasServers || hasSchemes || hasSecurityDefinitions ? (
+            <div className="scheme-container">
+              <Col className="schemes wrapper" mobile={12}>
+                {hasServers ? (<ServersContainer />) : null}
+                {hasSchemes ? (<SchemesContainer />) : null}
+                {hasSecurityDefinitions ? (<AuthorizeBtnContainer />) : null}
               </Col>
-            </Row>
-            <Row>
-              <Col mobile={12} desktop={12} >
-                <Models/>
-              </Col>
-            </Row>
-          </VersionPragmaFilter>
-        </div>
-      )
+            </div>
+          ) : null}
+
+          <FilterContainer/>
+
+          <Row>
+            <Col mobile={12} desktop={12} >
+              <Operations/>
+            </Col>
+          </Row>
+          <Row>
+            <Col mobile={12} desktop={12} >
+              <Models/>
+            </Col>
+          </Row>
+        </VersionPragmaFilter>
+      </div>
+    )
   }
 }

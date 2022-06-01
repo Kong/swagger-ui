@@ -127,7 +127,15 @@ export class Button extends React.Component {
 
 export const TextArea = (props) => <textarea {...props} aria-label={props?.description || ""} />
 
+TextArea.propTypes= {
+  description: PropTypes.string
+}
+
 export const Input = (props) => <input {...props} aria-label={props?.description || ""} />
+
+Input.propTypes= {
+  description: PropTypes.string
+}
 
 export class Select extends React.Component {
   static propTypes = {

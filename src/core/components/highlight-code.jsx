@@ -57,7 +57,7 @@ const HighlightCode = ({value, fileName, className, downloadable, getConfigs, ca
         </div>
       )}
 
-      {canSyntaxHighlightc ? (
+      {canSyntaxHighlight ? (
         <SyntaxHighlighter
           language={language}
           className={cx(className, "microlight")}

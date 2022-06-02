@@ -21,13 +21,13 @@ function ModelCollapseTest(baseUrl, urlFragment) {
 
   it("Models section should collapse and expand when toggled", () => {
     cy.visit(baseUrl)
-    .get(".models h4 .models-control")
+    .get(".models h1")
     .click()
     .get(".models")
     .should("not.have.class", "is-open")
     .get("#model-Order")
     .should("not.exist")
-    .get(".models h4 .models-control")
+    .get(".models h1")
     .click()
     .get(".models")
     .should("have.class", "is-open")

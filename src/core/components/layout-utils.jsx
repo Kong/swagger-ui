@@ -131,7 +131,7 @@ TextArea.propTypes= {
   description: PropTypes.string
 }
 
-export const Input = (props) => <input {...props} aria-label={props?.description || ""} />
+export const Input = (props) => <input {...props} />
 
 Input.propTypes= {
   description: PropTypes.string

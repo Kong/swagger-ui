@@ -5,7 +5,7 @@ import { fromJS } from "immutable"
 
 const Callbacks = (props) => {
   let { callbacks, getComponent, specPath } = props
-  // const Markdown = getComponent("Markdown")
+  // const Markdown = getComponent("Markdown", true)
   const OperationContainer = getComponent("OperationContainer", true)
 
   if(!callbacks) {
@@ -20,7 +20,7 @@ const Callbacks = (props) => {
           return null
         }
         return <div key={pathItemName}>
-          { pathItem.map((operation, method) => {
+          { pathItem.entrySeq().map(([method, operation]) => {
             if(method === "$$ref") {
               return null
             }

@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react"
 import PropTypes from "prop-types"
+import cx from "classnames"
 import { stringify } from "core/utils"
 
 const NOOP = Function.prototype
@@ -12,10 +13,12 @@ export default class RequestBodyEditor extends PureComponent {
     value: PropTypes.string,
     description: PropTypes.description,
     defaultValue: PropTypes.string,
+    errors: PropTypes.array,
   };
 
   static defaultProps = {
     onChange: NOOP,
+    userHasEditedBody: false,
   };
 
   constructor(props, context) {
@@ -53,7 +56,7 @@ export default class RequestBodyEditor extends PureComponent {
     }, () => this.onChange(inputValue))
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if(
       this.props.value !== nextProps.value &&
       nextProps.value !== this.state.value
@@ -64,7 +67,7 @@ export default class RequestBodyEditor extends PureComponent {
       })
     }
 
-    
+
 
     if(!nextProps.value && nextProps.defaultValue && !!this.state.value) {
       // if new value is falsy, we have a default, AND the falsy value didn't
@@ -76,6 +79,7 @@ export default class RequestBodyEditor extends PureComponent {
   render() {
     let {
       getComponent,
+      errors,
       description
     } = this.props
 
@@ -83,12 +87,14 @@ export default class RequestBodyEditor extends PureComponent {
       value
     } = this.state
 
+    let isInvalid = errors.size > 0 ? true : false
     const TextArea = getComponent("TextArea")
 
     return (
       <div className="body-param">
         <TextArea
-          className={"body-param__text"}
+          className={cx("body-param__text", { invalid: isInvalid } )}
+          title={errors.size ? errors.join(", ") : ""}
           value={value}
           description={`Body param for ${description}`}
           onChange={ this.onDomChange }

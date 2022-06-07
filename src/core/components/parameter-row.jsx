@@ -30,7 +30,7 @@ export default class ParameterRow extends Component {
     this.setDefaultValue()
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     let { specSelectors, pathMethod, rawParam } = props
     let isOAS3 = specSelectors.isOAS3()
 
@@ -102,9 +102,10 @@ export default class ParameterRow extends Component {
       .get("content", Map())
       .keySeq()
       .first()
-    
+
     // getSampleSchema could return null
     const generatedSampleValue = schema ? getSampleSchema(schema.toJS(), parameterMediaType, {
+
       includeWriteOnly: true
     }) : null
 
@@ -118,17 +119,26 @@ export default class ParameterRow extends Component {
       //// Find an initial value
 
       if (specSelectors.isSwagger2()) {
-        initialValue = paramWithMeta.get("x-example")
-          || paramWithMeta.getIn(["schema", "example"])
-          || (schema && schema.getIn(["default"]))
+        initialValue =
+          paramWithMeta.get("x-example") !== undefined
+          ? paramWithMeta.get("x-example")
+          : paramWithMeta.getIn(["schema", "example"]) !== undefined
+          ? paramWithMeta.getIn(["schema", "example"])
+          : (schema && schema.getIn(["default"]))
       } else if (specSelectors.isOAS3()) {
         const currentExampleKey = oas3Selectors.activeExamplesMember(...pathMethod, "parameters", this.getParamKey())
-        initialValue = paramWithMeta.getIn(["examples", currentExampleKey, "value"])
-          || paramWithMeta.getIn(["content", parameterMediaType, "example"])
-          || paramWithMeta.get("example")
-          || (schema && schema.get("example"))
-          || (schema && schema.get("default"))
-          || paramWithMeta.get("default") // ensures support for `parameterMacro`
+        initialValue =
+          paramWithMeta.getIn(["examples", currentExampleKey, "value"]) !== undefined
+          ? paramWithMeta.getIn(["examples", currentExampleKey, "value"])
+          : paramWithMeta.getIn(["content", parameterMediaType, "example"]) !== undefined
+          ? paramWithMeta.getIn(["content", parameterMediaType, "example"])
+          : paramWithMeta.get("example") !== undefined
+          ? paramWithMeta.get("example")
+          : (schema && schema.get("example")) !== undefined
+          ? (schema && schema.get("example"))
+          : (schema && schema.get("default")) !== undefined
+          ? (schema && schema.get("default"))
+          : paramWithMeta.get("default") // ensures support for `parameterMacro`
       }
 
       //// Process the initial value
@@ -144,7 +154,7 @@ export default class ParameterRow extends Component {
         this.onChangeWrapper(initialValue)
       } else if(
         schema && schema.get("type") === "object"
-        && generatedSampleValue 
+        && generatedSampleValue
         && !paramWithMeta.get("examples")
       ) {
         // Object parameters get special treatment.. if the user doesn't set any
@@ -190,6 +200,7 @@ export default class ParameterRow extends Component {
     let inType = param.get("in")
     let bodyParam = inType !== "body" ? null
       : <ParamBody getComponent={getComponent}
+                   getConfigs={ getConfigs }
                    fn={fn}
                    param={param}
                    consumes={ specSelectors.consumesOptionsFor(pathMethod) }
@@ -202,7 +213,7 @@ export default class ParameterRow extends Component {
       />
 
     const ModelExample = getComponent("modelExample")
-    const Markdown = getComponent("Markdown")
+    const Markdown = getComponent("Markdown", true)
     const ParameterExt = getComponent("ParameterExt")
     const ParameterIncludeEmpty = getComponent("ParameterIncludeEmpty")
     const ExamplesSelectValueRetainer = getComponent("ExamplesSelectValueRetainer")
@@ -262,7 +273,7 @@ export default class ParameterRow extends Component {
         <td className="parameters-col_name">
           <div className={required ? "parameter__name required" : "parameter__name"}>
             { param.get("name") }
-            { !required ? null : <span style={{color: "red"}}>&nbsp;*</span> }
+            { !required ? null : <span>&nbsp;*</span> }
           </div>
           <div className="parameter__type">
             { type }
@@ -273,8 +284,8 @@ export default class ParameterRow extends Component {
             { isOAS3 && param.get("deprecated") ? "deprecated": null }
           </div>
           <div className="parameter__in">({ param.get("in") })</div>
-          { !showCommonExtensions || !commonExt.size ? null : commonExt.map((v, key) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
-          { !showExtensions || !extensions.size ? null : extensions.map((v, key) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
+          { !showCommonExtensions || !commonExt.size ? null : commonExt.entrySeq().map(([key, v]) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
+          { !showExtensions || !extensions.size ? null : extensions.entrySeq().map(([key, v]) => <ParameterExt key={`${key}-${v}`} xKey={key} xVal={v} /> )}
         </td>
 
         <td className="parameters-col_description">
@@ -290,6 +301,11 @@ export default class ParameterRow extends Component {
 
           { (bodyParam || !isExecute) && paramDefaultValue !== undefined ?
             <Markdown className="parameter__default" source={"<i>Default value</i> : " + paramDefaultValue}/>
+            : null
+          }
+
+          { (bodyParam || !isExecute) && paramExample !== undefined ?
+            <Markdown source={"<i>Example</i> : " + paramExample}/>
             : null
           }
 
@@ -317,7 +333,7 @@ export default class ParameterRow extends Component {
                               value={ value }
                               required={ required }
                               disabled={!isExecute}
-                              description={param.get("description") ? `${param.get("name")} - ${param.get("description")}` : `${param.get("name")}`}
+                              description={param.get("name")}
                               onChange={ this.onChangeWrapper }
                               errors={ paramWithMeta.get("errors") }
                               schema={ schema }/>
@@ -331,7 +347,8 @@ export default class ParameterRow extends Component {
                                                 isExecute={ isExecute }
                                                 specSelectors={ specSelectors }
                                                 schema={ schema }
-                                                example={ bodyParam }/>
+                                                example={ bodyParam }
+                                                includeWriteOnly={ true }/>
               : null
           }
 
@@ -352,6 +369,7 @@ export default class ParameterRow extends Component {
                   oas3Selectors.activeExamplesMember(...pathMethod, "parameters", this.getParamKey())
                 ])}
                 getComponent={getComponent}
+                getConfigs={getConfigs}
               />
             ) : null
           }

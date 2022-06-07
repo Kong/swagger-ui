@@ -21,32 +21,43 @@ export default class Servers extends React.Component {
       return
     }
 
-    //fire 'change' event to set default 'value' of select
-    this.setServer(servers.first().get("url"))
+    // fire 'change' event to set default 'value' of select
+    this.setServer(servers.first()?.get("url"))
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let {
       servers,
       setServerVariableValue,
       getServerVariable
-    } = this.props
-
-    if(this.props.currentServer !== nextProps.currentServer) {
+    } = nextProps
+    if (this.props.currentServer !== nextProps.currentServer || this.props.servers !== nextProps.servers) {
       // Server has changed, we may need to set default values
       let currentServerDefinition = servers
         .find(v => v.get("url") === nextProps.currentServer)
-
+      let prevServerDefinition = this.props.servers
+        .find(v => v.get("url") === this.props.currentServer) || OrderedMap()
+      
       if(!currentServerDefinition) {
         return this.setServer(servers.first().get("url"))
       }
-
+      
+      let prevServerVariableDefs = prevServerDefinition.get("variables") || OrderedMap()
+      let prevServerVariableDefaultKey = prevServerVariableDefs.find(v => v.get("default")) || OrderedMap()
+      let prevServerVariableDefaultValue = prevServerVariableDefaultKey.get("default")
+      
       let currentServerVariableDefs = currentServerDefinition.get("variables") || OrderedMap()
-
+      let currentServerVariableDefaultKey = currentServerVariableDefs.find(v => v.get("default")) || OrderedMap()
+      let currentServerVariableDefaultValue = currentServerVariableDefaultKey.get("default")
+      
       currentServerVariableDefs.map((val, key) => {
         let currentValue = getServerVariable(nextProps.currentServer, key)
+        
+        // note: it is possible for both key/val to be the same across definitions,
+        // but we will try to detect a change in default values between definitions
         // only set the default value if the user hasn't set one yet
-        if(!currentValue) {
+        // or if the definition appears to have changed
+        if (!currentValue || prevServerVariableDefaultValue !== currentServerVariableDefaultValue) {
           setServerVariableValue({
             server: nextProps.currentServer,
             key,
@@ -95,7 +106,7 @@ export default class Servers extends React.Component {
     } = this.props
 
 
-    let currentServerDefinition = servers.find(v => v.get("url") === currentServer) || OrderedMap()
+    let currentServerDefinition = servers.find(s => s.get("url") === currentServer) || OrderedMap()
 
     let currentServerVariableDefs = currentServerDefinition.get("variables") || OrderedMap()
 
@@ -104,7 +115,11 @@ export default class Servers extends React.Component {
     return (
       <div className="servers">
         <label htmlFor="servers">
-          <select aria-label="available servers" onChange={ this.onServerChange }>
+          <select 
+            aria-label="available servers" 
+            onChange={ this.onServerChange } 
+            value={currentServer}
+          >
             { servers.valueSeq().map(
               ( server ) =>
               <option
@@ -129,7 +144,7 @@ export default class Servers extends React.Component {
             <table>
               <tbody>
                 {
-                  currentServerVariableDefs.map((val, name) => {
+                  currentServerVariableDefs.entrySeq().map(([name, val]) => {
                     return <tr key={name}>
                       <td>{name}</td>
                       <td>

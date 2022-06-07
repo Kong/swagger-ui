@@ -56,7 +56,7 @@ export class Col extends React.Component {
     let classesAr = []
 
     for (let device in DEVICES) {
-      if (!DEVICES.hasOwnProperty(device)) {
+      if (!Object.prototype.hasOwnProperty.call(DEVICES, device)) {
         continue
       }
       let deviceClass = DEVICES[device]
@@ -73,10 +73,14 @@ export class Col extends React.Component {
       }
     }
 
+    if (hide) {
+      classesAr.push("hidden")
+    }
+
     let classes = xclass(rest.className, ...classesAr)
 
     return (
-      <section {...rest} style={{display: hide ? "none": null}} className={classes}/>
+      <section {...rest} className={classes}/>
     )
   }
 
@@ -123,7 +127,15 @@ export class Button extends React.Component {
 
 export const TextArea = (props) => <textarea {...props} aria-label={props?.description || ""} />
 
-export const Input = (props) => <input {...props} aria-label={props?.description || ""} />
+TextArea.propTypes= {
+  description: PropTypes.string
+}
+
+export const Input = (props) => <input {...props} />
+
+Input.propTypes= {
+  description: PropTypes.string
+}
 
 export class Select extends React.Component {
   static propTypes = {
@@ -178,7 +190,7 @@ export class Select extends React.Component {
     onChange && onChange(value)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // TODO: this puts us in a weird area btwn un/controlled selection... review
     if(nextProps.value !== this.props.value) {
       this.setState({ value: nextProps.value })
@@ -214,7 +226,7 @@ Link.propTypes = {
   className: PropTypes.string
 }
 
-const NoMargin = ({children}) => <div style={{height: "auto", border: "none", margin: 0, padding: 0}}> {children} </div>
+const NoMargin = ({children}) => <div className="no-margin"> {children} </div>
 
 NoMargin.propTypes = {
   children: PropTypes.node

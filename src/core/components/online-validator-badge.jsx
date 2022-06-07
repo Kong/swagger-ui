@@ -2,7 +2,7 @@ import React from "react"
 import URL from "url-parse"
 
 import PropTypes from "prop-types"
-import { sanitizeUrl } from "core/utils"
+import { sanitizeUrl, requiresValidationURL } from "core/utils"
 import win from "core/window"
 
 export default class OnlineValidatorBadge extends React.Component {
@@ -30,7 +30,7 @@ export default class OnlineValidatorBadge extends React.Component {
       return urlObject.toString()
     }
 
-    componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
         let { getConfigs } = nextProps
         let { validatorUrl } = getConfigs()
 
@@ -48,12 +48,12 @@ export default class OnlineValidatorBadge extends React.Component {
 
         if ( typeof spec === "object" && Object.keys(spec).length) return null
 
-        if (!this.state.url || !this.state.validatorUrl || this.state.url.indexOf("localhost") >= 0
-                            || this.state.url.indexOf("127.0.0.1") >= 0) {
+        if (!this.state.url || !requiresValidationURL(this.state.validatorUrl)
+                            || !requiresValidationURL(this.state.url)) {
           return null
         }
 
-        return (<span style={{ float: "right"}}>
+        return (<span className="float-right">
                 <a target="_blank" rel="noopener noreferrer" href={`${ sanitizedValidatorUrl }/debug?url=${ encodeURIComponent(this.state.url) }`}>
                     <ValidatorImage src={`${ sanitizedValidatorUrl }?url=${ encodeURIComponent(this.state.url) }`} alt="Online validator badge"/>
                 </a>
@@ -91,7 +91,7 @@ class ValidatorImage extends React.Component {
     img.src = this.props.src
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.src !== this.props.src) {
       const img = new Image()
       img.onload = () => {

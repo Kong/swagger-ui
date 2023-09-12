@@ -127,7 +127,7 @@ export default function SwaggerUI(opts) {
   }
 
   var store = new System(storeConfigs)
-  store.register([constructorConfig.plugins, inlinePlugin])
+  store.register([constructorConfig.plugins, AllPlugins.UrlParamDisableIndex, inlinePlugin])
 
   var system = store.getSystem()
 

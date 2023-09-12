@@ -12,6 +12,7 @@ const JsonSchemaPropShape = {
   getComponent: PropTypes.func.isRequired,
   value: PropTypes.any,
   onChange: PropTypes.func,
+  onTextInputBlur: PropTypes.func,
   keyName: PropTypes.any,
   fn: PropTypes.object.isRequired,
   schema: PropTypes.object,
@@ -25,6 +26,7 @@ const JsonSchemaPropShape = {
 const JsonSchemaDefaultProps = {
   value: "",
   onChange: noop,
+  onTextInputBlur: noop,
   schema: {},
   keyName: "",
   required: false,
@@ -113,6 +115,7 @@ export class JsonSchema_string extends Component {
           minLength={0}
           debounceTimeout={350}
           placeholder={description}
+          onBlur={this.props.onTextInputBlur}
           onChange={this.onChange}
           disabled={isDisabled} />
       )
@@ -150,7 +153,7 @@ export class JsonSchema_array extends PureComponent {
       value: value.delete(i)
     }), this.onChange)
   }
- 
+
   addItem = () => {
     let newValue = valueOrEmptyList(this.state.value)
     this.setState(() => ({
@@ -227,6 +230,7 @@ export class JsonSchema_array extends PureComponent {
                       <JsonSchemaArrayItemText
                         value={item}
                         onChange={(val) => this.onItemChange(val, i)}
+                        onTextInputBlur={this.props.onTextInputBlur}
                         description={`${description} #${i}`}
                         disabled={disabled}
                         errors={errors}
@@ -290,6 +294,7 @@ export class JsonSchemaArrayItemText extends Component {
       debounceTimeout={350}
       aria-label={description}
       placeholder={description}
+      onBlur={this.props.onTextInputBlur}
       onChange={this.onChange}
       disabled={disabled} />)
   }

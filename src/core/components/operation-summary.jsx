@@ -8,6 +8,8 @@ import toString from "lodash/toString"
 export default class OperationSummary extends PureComponent {
 
   static propTypes = {
+    id: PropTypes.string,
+    aria: PropTypes.object,
     specPath: ImPropTypes.list.isRequired,
     operationProps: PropTypes.instanceOf(Iterable).isRequired,
     toggleShown: PropTypes.func.isRequired,
@@ -26,6 +28,8 @@ export default class OperationSummary extends PureComponent {
   render() {
 
     let {
+      id,
+      aria,
       toggleShown,
       getComponent,
       authActions,
@@ -56,9 +60,19 @@ export default class OperationSummary extends PureComponent {
     const OperationSummaryPath = getComponent("OperationSummaryPath")
     const JumpToPath = getComponent("JumpToPath", true)
 
+    const ariaProps = Object.keys(aria || {}).reduce((acc, key) => {
+      acc[`aria-${key}`] = aria[key]
+      return acc
+    }, {})
+
     return (
 
-      <div className={`opblock-summary opblock-summary-${method}`} onClick={toggleShown} >
+      <div
+        id={id}
+        {...ariaProps}
+        className={`opblock-summary opblock-summary-${method}`}
+        onClick={toggleShown}
+      >
         <OperationSummaryMethod method={method} />
         <OperationSummaryPath getComponent={getComponent} operationProps={operationProps} specPath={specPath} />
 

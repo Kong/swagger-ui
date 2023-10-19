@@ -1,6 +1,9 @@
 .markdown, .renderedMarkdown {
   p, pre {
     margin: 1em auto;
+
+    word-break: break-all; /* Fallback trick */
+    word-break: break-word;
   }
   pre {
     color: black;
@@ -22,5 +25,6 @@
 
   pre > code {
     display: block;
+    white-space: pre-wrap;
   }
 }

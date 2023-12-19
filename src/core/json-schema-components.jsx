@@ -17,6 +17,7 @@ const JsonSchemaPropShape = {
   fn: PropTypes.object.isRequired,
   schema: PropTypes.object,
   errors: ImPropTypes.list,
+  errorsDescribedById: PropTypes.string,
   required: PropTypes.bool,
   dispatchInitialValue: PropTypes.bool,
   description: PropTypes.any,
@@ -46,7 +47,7 @@ export class JsonSchemaForm extends Component {
   }
 
   render() {
-    let { schema, errors, value, onChange, getComponent, fn, disabled } = this.props
+    let { schema, errors, errorsDescribedById, value, onChange, getComponent, fn, disabled } = this.props
     const format = schema && schema.get ? schema.get("format") : null
     const type = schema && schema.get ? schema.get("type") : null
 
@@ -58,7 +59,7 @@ export class JsonSchemaForm extends Component {
     if (!Comp) {
       Comp = getComponent("JsonSchema_string")
     }
-    return <Comp { ...this.props } errors={errors} fn={fn} getComponent={getComponent} value={value} onChange={onChange} schema={schema} disabled={disabled}/>
+    return <Comp { ...this.props } errors={errors} errorsDescribedById={errorsDescribedById} fn={fn} getComponent={getComponent} value={value} onChange={onChange} schema={schema} disabled={disabled}/>
   }
 }
 
@@ -71,7 +72,7 @@ export class JsonSchema_string extends Component {
   }
   onEnumChange = (val) => this.props.onChange(val)
   render() {
-    let { getComponent, value, schema, errors, required, description, disabled } = this.props
+    let { getComponent, value, schema, errors, errorsDescribedById, required, description, disabled } = this.props
     const enumValue = schema && schema.get ? schema.get("enum") : null
     const format = schema && schema.get ? schema.get("format") : null
     const type = schema && schema.get ? schema.get("type") : null
@@ -80,6 +81,10 @@ export class JsonSchema_string extends Component {
       value = "" // value should not be null; this fixes a Debounce error
     }
     errors = errors.toJS ? errors.toJS() : []
+
+    const ariaProps = errors.length
+      ? { "aria-invalid": "true", "aria-describedby": errorsDescribedById }
+      : { "aria-invalid": "false" }
 
     if ( enumValue ) {
       const Select = getComponent("Select")
@@ -90,7 +95,8 @@ export class JsonSchema_string extends Component {
                       description={ description }
                       allowEmptyValue={ !required }
                       disabled={disabled}
-                      onChange={ this.onEnumChange }/>)
+                      onChange={ this.onEnumChange }
+                      { ...ariaProps } />)
     }
 
     const isDisabled = disabled || (schemaIn && schemaIn === "formData" && !("FormData" in window))
@@ -98,6 +104,7 @@ export class JsonSchema_string extends Component {
     if (type && type === "file") {
       return (
         <Input type="file"
+          {...ariaProps}
           className={errors.length ? "invalid" : ""}
           title={errors.length ? errors : ""}
           onChange={this.onChange}
@@ -111,6 +118,7 @@ export class JsonSchema_string extends Component {
           className={errors.length ? "invalid" : ""}
           title={errors.length ? errors : ""}
           aria-label={description}
+          {...ariaProps}
           value={value}
           minLength={0}
           debounceTimeout={350}
@@ -168,9 +176,10 @@ export class JsonSchema_array extends PureComponent {
   }
 
   render() {
-    let { getComponent, required, schema, errors, fn, disabled, description } = this.props
+    let { getComponent, required, schema, errors, errorsDescribedById, fn, disabled, description } = this.props
 
-    errors = errors.toJS ? errors.toJS() : []
+    errors = errors.toJS ? errors.toJS() : Array.isArray(errors) ? errors : []
+
     const value = this.state.value // expect Im List
     const shouldRenderValue =
       value && value.count && value.count() > 0 ? true : false
@@ -194,6 +203,9 @@ export class JsonSchema_array extends PureComponent {
 
     if ( schemaItemsEnum ) {
       const Select = getComponent("Select")
+      const ariaProps = errors.length
+        ? { "aria-invalid": "true", "aria-describedby": errorsDescribedById }
+        : { "aria-invalid": "false" }
       return (<Select className={ errors.length ? "invalid" : ""}
                       title={ errors.length ? errors : ""}
                       multiple={ true }
@@ -202,7 +214,8 @@ export class JsonSchema_array extends PureComponent {
                       disabled={disabled}
                       allowedValues={ schemaItemsEnum }
                       allowEmptyValue={ !required }
-                      onChange={ this.onEnumChange }/>)
+                      onChange={ this.onEnumChange }
+                      { ...ariaProps } />)
     }
 
     const Button = getComponent("Button")
@@ -210,10 +223,10 @@ export class JsonSchema_array extends PureComponent {
       <div className="json-schema-array">
         {shouldRenderValue ?
           (value.map((item, i) => {
-            if (errors.length) {
-              let err = errors.filter((err) => err.index === i)
-              if (err.length) errors = [err[0].error + i]
-            }
+            const itemErrors = fromJS([
+              ...errors.filter((err) => err.index === i)
+              .map(e => String(e.error))
+            ])
             return (
               <div key={i} className="json-schema-form-item">
                 {
@@ -222,7 +235,8 @@ export class JsonSchema_array extends PureComponent {
                     value={item}
                     onChange={(val)=> this.onItemChange(val, i)}
                     disabled={disabled}
-                    errors={errors}
+                    errors={itemErrors}
+                    errorsDescribedById={ errorsDescribedById }
                     description={`${description} #${i}`}
                     getComponent={getComponent}
                     />
@@ -233,13 +247,15 @@ export class JsonSchema_array extends PureComponent {
                         onTextInputBlur={this.props.onTextInputBlur}
                         description={`${description} #${i}`}
                         disabled={disabled}
-                        errors={errors}
+                        errors={itemErrors}
+                        errorsDescribedById={ errorsDescribedById }
                       />
                       : <ArrayItemsComponent {...this.props}
                         value={item}
                         onChange={(val) => this.onItemChange(val, i)}
                         disabled={disabled}
-                        errors={errors}
+                        errors={itemErrors}
+                        errorsDescribedById={ errorsDescribedById }
                         schema={schemaItemsSchema}
                         getComponent={getComponent}
                         fn={fn}
@@ -279,11 +295,14 @@ export class JsonSchemaArrayItemText extends Component {
   }
 
   render() {
-    let { value, errors, description, disabled } = this.props
+    let { value, errors, errorsDescribedById, description, disabled } = this.props
     if (!value) {
       value = "" // value should not be null
     }
     errors = errors.toJS ? errors.toJS() : []
+    const ariaProps = errors.length
+      ? { "aria-invalid": "true", "aria-describedby": errorsDescribedById }
+      : { "aria-invalid": "false" }
 
     return (<DebounceInput
       type={"text"}
@@ -296,7 +315,8 @@ export class JsonSchemaArrayItemText extends Component {
       placeholder={description}
       onBlur={this.props.onTextInputBlur}
       onChange={this.onChange}
-      disabled={disabled} />)
+      disabled={disabled}
+      { ...ariaProps } />)
   }
 }
 
@@ -310,7 +330,11 @@ export class JsonSchemaArrayItemFile extends Component {
   }
 
   render() {
-    let { getComponent, errors, disabled, description } = this.props
+    let { getComponent, errors, errorsDescribedById, disabled, description } = this.props
+    const ariaProps = errors.length
+      ? { "aria-invalid": "true", "aria-describedby": errorsDescribedById }
+      : { "aria-invalid": "false" }
+
     const Input = getComponent("Input")
     const isDisabled = disabled || !("FormData" in window)
 
@@ -319,7 +343,8 @@ export class JsonSchemaArrayItemFile extends Component {
       title={errors.length ? errors : ""}
       aria-label={description}
       onChange={this.onFileChange}
-      disabled={isDisabled} />)
+      disabled={isDisabled}
+      { ...ariaProps } />)
   }
 }
 
@@ -329,8 +354,11 @@ export class JsonSchema_boolean extends Component {
 
   onEnumChange = (val) => this.props.onChange(val)
   render() {
-    let { getComponent, value, errors, schema, required, disabled, description } = this.props
+    let { getComponent, value, errors, errorsDescribedById, schema, required, disabled, description } = this.props
     errors = errors.toJS ? errors.toJS() : []
+    const ariaProps = errors.length
+      ? { "aria-invalid": "true", "aria-describedby": errorsDescribedById }
+      : { "aria-invalid": "false" }
     let enumValue = schema && schema.get ? schema.get("enum") : null
     if (!enumValue) {
       // in case schema.get() also returns undefined/null
@@ -345,7 +373,8 @@ export class JsonSchema_boolean extends Component {
                     disabled={ disabled }
                     allowedValues={ enumValue }
                     allowEmptyValue={ !required }
-                    onChange={ this.onEnumChange }/>)
+                    onChange={ this.onEnumChange }
+                    { ...ariaProps } />)
   }
 }
 
@@ -372,14 +401,19 @@ export class JsonSchema_object extends PureComponent {
       getComponent,
       value,
       errors,
+      errorsDescribedById,
       disabled
     } = this.props
 
     const TextArea = getComponent("TextArea")
+    const ariaProps = errors.size
+      ? { "aria-invalid": "true", "aria-describedby": errorsDescribedById }
+      : { "aria-invalid": "false" }
 
     return (
       <div>
         <TextArea
+          { ...ariaProps }
           className={cx({ invalid: errors.size })}
           title={ errors.size ? errors.join(", ") : ""}
           value={stringify(value)}

@@ -135,6 +135,9 @@ export class Select extends React.Component {
     className: PropTypes.string,
     disabled: PropTypes.bool,
     description: PropTypes.string,
+
+    "aria-describedby": PropTypes.string,
+    "aria-invalid": PropTypes.string,
   }
 
   static defaultProps = {
@@ -190,7 +193,16 @@ export class Select extends React.Component {
     let value = this.state.value?.toJS?.() || this.state.value
 
     return (
-      <select className={this.props.className} multiple={ multiple } value={value} onChange={ this.onChange } disabled={disabled} aria-label={description}>
+      <select
+        className={this.props.className}
+        multiple={multiple}
+        value={value}
+        onChange={this.onChange}
+        disabled={disabled}
+        aria-label={description}
+        aria-describedby={this.props['aria-describedby']}
+        aria-invalid={this.props['aria-invalid']}
+      >
         { allowEmptyValue ? <option value="">--</option> : null }
         {
           allowedValues.map(function (item, key) {
